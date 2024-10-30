@@ -278,6 +278,31 @@ class RbacController extends Controller
         $deleteImagem->description = 'delete Imagem';
         $auth->add($deleteImagem);
 
+        // view "ViewCarrinhoCompras” permission
+        $viewCarrinhoCompras = $auth->createPermission('viewCarrinhoCompras');
+        $viewCarrinhoCompras->description = 'View CarrinhoCompras';
+        $auth->add($viewCarrinhoCompras);
+
+        // view "ViewLinhaCarrinhoCompras” permission
+        $viewLinhaCarrinhoCompras = $auth->createPermission('viewLinhaCarrinhoCompras');
+        $viewLinhaCarrinhoCompras->description = 'View LinhaCarrinhoCompras';
+        $auth->add($viewLinhaCarrinhoCompras);
+
+        // add “CreateLinhaCarrinhoCompra” permission
+        $createLinhaCarrinhoCompra = $auth->createPermission('createLinhaCarrinhoCompra');
+        $createLinhaCarrinhoCompra->description = 'Create LinhaCarrinhoCompra';
+        $auth->add($createLinhaCarrinhoCompra);
+
+        // edit “UpdateLinhaCarrinhoCompra” permission
+        $updateLinhaCarrinhoCompra = $auth->createPermission('updateLInhaCarrinhoCompra');
+        $updateLinhaCarrinhoCompra->description = 'Update LinhaCarrinhoCompra';
+        $auth->add($updateLinhaCarrinhoCompra);
+
+        // delete “DeleteLinhaCarrinhoCompra” permission
+        $deleteLinhaCarrinhoCompra = $auth->createPermission('deleteLinhaCarrinhoCompra');
+        $deleteLinhaCarrinhoCompra->description = 'Delete LinhaCarrinhoCompra';
+        $auth->add($deleteLinhaCarrinhoCompra);
+
         // view "View Faturas" permission
         $viewFaturas = $auth->createPermission('viewFaturas');
         $viewFaturas->description = 'View Faturas';
@@ -377,36 +402,6 @@ class RbacController extends Controller
         $deleteAvaliacao = $auth->createPermission('deleteAvaliacao');
         $deleteAvaliacao->description = 'Delete Avaliacao';
         $auth->add($deleteAvaliacao);
-
-        // view "ViewCupoesDescontos” permission
-        $viewCupoesDescontos = $auth->createPermission('viewCupoesDescontos');
-        $viewCupoesDescontos->description = 'View CupoesDescontos';
-        $auth->add($viewCupoesDescontos);
-
-        // view "ViewCarrinhoCompras” permission
-        $viewCarrinhoCompras = $auth->createPermission('viewCarrinhoCompras');
-        $viewCarrinhoCompras->description = 'View CarrinhoCompras';
-        $auth->add($viewCarrinhoCompras);
-
-        // view "ViewLinhaCarrinhoCompras” permission
-        $viewLinhaCarrinhoCompras = $auth->createPermission('viewLinhaCarrinhoCompras');
-        $viewLinhaCarrinhoCompras->description = 'View LinhaCarrinhoCompras';
-        $auth->add($viewLinhaCarrinhoCompras);
-
-        // add “CreateLinhaCarrinhoCompra” permission
-        $createLinhaCarrinhoCompra = $auth->createPermission('createLinhaCarrinhoCompra');
-        $createLinhaCarrinhoCompra->description = 'Create LinhaCarrinhoCompra';
-        $auth->add($createLinhaCarrinhoCompra);
-
-        // edit “UpdateLinhaCarrinhoCompra” permission
-        $updateLinhaCarrinhoCompra = $auth->createPermission('updateLInhaCarrinhoCompra');
-        $updateLinhaCarrinhoCompra->description = 'Update LinhaCarrinhoCompra';
-        $auth->add($updateLinhaCarrinhoCompra);
-
-        // delete “DeleteLinhaCarrinhoCompra” permission
-        $deleteLinhaCarrinhoCompra = $auth->createPermission('deleteLinhaCarrinhoCompra');
-        $deleteLinhaCarrinhoCompra->description = 'Delete LinhaCarrinhoCompra';
-        $auth->add($deleteLinhaCarrinhoCompra);
 
         // add "admin" role and permissions
         $admin = $auth->createRole('admin');
@@ -559,7 +554,6 @@ class RbacController extends Controller
         $auth->addChild($cliente, $viewFaturas);
         $auth->addChild($cliente, $viewLinhasFaturas);
         $auth->addChild($cliente, $viewCupoes);
-        $auth->addChild($cliente, $viewCupoesDescontos);
         $auth->addChild($cliente, $viewCarrinhoCompras);
         $auth->addChild($cliente, $viewLinhaCarrinhoCompras);
         $auth->addChild($cliente, $createLinhaCarrinhoCompra);
@@ -574,8 +568,6 @@ class RbacController extends Controller
         $auth->addChild($cliente, $viewCategorias);
         $auth->addChild($cliente, $viewIvas);
         $auth->addChild($cliente, $viewGeneros);
-
-
         // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
         // usually implemented in your User model.
         $auth->assign($cliente, 3);
