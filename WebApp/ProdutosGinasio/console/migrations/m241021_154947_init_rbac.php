@@ -368,7 +368,7 @@ class m241021_154947_init_rbac extends Migration
         // edit “UpdateFavorito” permission
         $updateFavorito = $auth->createPermission('updateFavorito');
         $updateFavorito->description = 'Update Favorito';
-        $auth>add($updateFavorito);
+        $auth->add($updateFavorito);
 
         // delete “DeleteFavorito” permission
         $deleteFavorito = $auth->createPermission('deleteFavorito');
@@ -388,7 +388,7 @@ class m241021_154947_init_rbac extends Migration
         // edit “UpdateAvaliacao” permission
         $updateAvaliacao = $auth->createPermission('updateAvaliacao');
         $updateAvaliacao->description = 'Update Avaliacao';
-        $auth>add($updateAvaliacao);
+        $auth->add($updateAvaliacao);
 
         // delete “DeleteAvaliacao” permission
         $deleteAvaliacao = $auth->createPermission('deleteAvaliacao');
@@ -418,7 +418,7 @@ class m241021_154947_init_rbac extends Migration
         // edit “UpdateLinhaCarrinhoCompra” permission
         $updateLinhaCarrinhoCompra = $auth->createPermission('updateLInhaCarrinhoCompra');
         $updateLinhaCarrinhoCompra->description = 'Update LinhaCarrinhoCompra';
-        $auth>add($updateLinhaCarrinhoCompra);
+        $auth->add($updateLinhaCarrinhoCompra);
 
         // delete “DeleteLinhaCarrinhoCompra” permission
         $deleteLinhaCarrinhoCompra = $auth->createPermission('deleteLinhaCarrinhoCompra');
