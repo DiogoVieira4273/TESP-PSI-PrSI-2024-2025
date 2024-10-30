@@ -231,7 +231,7 @@ class m241021_154947_init_rbac extends Migration
         $auth->add($updateCategoria);
 
         // delete "deleteCategoria" permission
-        $deleteCategoria = $auth->createPermission('deleteMarca');
+        $deleteCategoria = $auth->createPermission('deleteCategoria');
         $deleteCategoria->description = 'delete Categoria';
         $auth->add($deleteCategoria);
 
@@ -294,36 +294,6 @@ class m241021_154947_init_rbac extends Migration
         $deleteImagem = $auth->createPermission('deleteImagem');
         $deleteImagem->description = 'delete Imagem';
         $auth->add($deleteImagem);
-
-        // view "View Avaliacoes" permission
-        $viewAvaliacoes = $auth->createPermission('viewAvaliacoes');
-        $viewAvaliacoes->description = 'View Avaliacoes';
-        $auth->add($viewAvaliacoes);
-
-        // view "View Imagens" permission
-        $viewImagens = $auth->createPermission('viewImagens');
-        $viewImagens->description = 'View Imagens';
-        $auth->add($viewImagens);
-
-        // add "createImagem" permission
-        $createImagem = $auth->createPermission('createImagem');
-        $createImagem->description = 'Create a Imagem';
-        $auth->add($createImagem);
-
-        // edit "updateImagem" permission
-        $updateImagem = $auth->createPermission('updateImagem');
-        $updateImagem->description = 'Update Imagem';
-        $auth->add($updateImagem);
-
-        // delete "deleteImagem" permission
-        $deleteImagem = $auth->createPermission('deleteImagem');
-        $deleteImagem->description = 'delete Imagem';
-        $auth->add($deleteImagem);
-
-        // view "View Avaliacoes" permission
-        $viewAvaliacoes = $auth->createPermission('viewAvaliacoes');
-        $viewAvaliacoes->description = 'View Avaliacoes';
-        $auth->add($viewAvaliacoes);
 
         // view "View Faturas" permission
         $viewFaturas = $auth->createPermission('viewFaturas');
@@ -591,7 +561,9 @@ class m241021_154947_init_rbac extends Migration
         $cliente = $auth->createRole('cliente');
         $auth->add($cliente);
         $auth->addChild($cliente, $viewUser);
+        $auth->addChild($cliente, $updateUser);
         $auth->addChild($cliente, $viewProfile);
+        $auth->addChild($cliente, $updateProfile);
         $auth->addChild($cliente, $viewFavoritos);
         $auth->addChild($cliente, $createFavorito);
         $auth->addChild($cliente, $updateFavorito);
