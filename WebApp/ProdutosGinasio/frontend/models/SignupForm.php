@@ -45,18 +45,23 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if (!$this->validate()) {
-            return null;
-        }
-        
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
+        if ($this->validate()) {
+            $user = new User();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->setPassword($this->password);
+            $user->generateAuthKey();
+            $user->save(false);
 
-        return $user->save() && $this->sendEmail($user);
+            $auth = Yii::$app->authManager;
+            $cliente = $auth->getRole('cliente');
+            $auth->assign($cliente, $user->getId());
+
+            $user->status = User::STATUS_ACTIVE;
+
+            return $user->save();
+        }
+        return null;
     }
 
     /**
