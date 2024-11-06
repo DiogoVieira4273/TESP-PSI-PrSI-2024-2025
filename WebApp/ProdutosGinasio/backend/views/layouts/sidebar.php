@@ -27,8 +27,8 @@
                 'items' => [
                     ['label' => 'Yii2 PROVIDED', 'header' => true],
                     ['label' => 'Gii',  'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
-                    ['label' => 'Users',  'icon' => 'file-code', 'url' => ['/users/index'], 'target' => '_blank'],
-                    ['label' => 'Profiles',  'icon' => 'file-code', 'url' => ['/profiles/index'], 'target' => '_blank'],
+                    ['label' => 'Users',  'icon' => 'file-code', 'url' => ['/user/index'], 'target' => '_blank'],
+                    ['label' => 'Profiles',  'icon' => 'file-code', 'url' => ['/profile/index'], 'target' => '_blank'],
                     ['label' => 'Produtos', 'header' => true],
                     [
                         'label' => 'Ver Produtos',
