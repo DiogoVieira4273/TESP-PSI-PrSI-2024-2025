@@ -33,12 +33,12 @@
                     [
                         'label' => 'Ver Produtos',
                         'items' => [
-                            ['label' => 'Produtos', 'icon' => 'file-code', 'url' => ['/produtos/index'], 'target' => '_blank'],
-                            ['label' => 'Categorias', 'icon' => 'file-code', 'url' => ['/categorias/index'], 'target' => '_blank'],
-                            ['label' => 'Marcas', 'icon' => 'file-code', 'url' => ['/marcas/index'], 'target' => '_blank'],
-                            ['label' => 'Géneros', 'icon' => 'file-code', 'url' => ['/generos/index'], 'target' => '_blank'],
-                            ['label' => 'Ivas', 'icon' => 'file-code', 'url' => ['/ivas/index'], 'target' => '_blank'],
-                            ['label' => 'Tamanhos', 'icon' => 'file-code', 'url' => ['/tamanhos/index'], 'target' => '_blank'],
+                            ['label' => 'Produtos', 'icon' => 'file-code', 'url' => ['/produto/index'], 'target' => '_blank'],
+                            ['label' => 'Categorias', 'icon' => 'file-code', 'url' => ['/categoria/index'], 'target' => '_blank'],
+                            ['label' => 'Marcas', 'icon' => 'file-code', 'url' => ['/marca/index'], 'target' => '_blank'],
+                            ['label' => 'Géneros', 'icon' => 'file-code', 'url' => ['/genero/index'], 'target' => '_blank'],
+                            ['label' => 'Ivas', 'icon' => 'file-code', 'url' => ['/iva/index'], 'target' => '_blank'],
+                            ['label' => 'Tamanhos', 'icon' => 'file-code', 'url' => ['/tamanho/index'], 'target' => '_blank'],
                             ['label' => 'Avaliações', 'icon' => 'file-code', 'url' => ['/avaliacoes/index'], 'target' => '_blank'],
                         ],
                     ],
