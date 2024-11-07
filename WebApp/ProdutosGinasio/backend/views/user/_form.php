@@ -12,10 +12,24 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'username')->textInput(['value' => $model->username]) ?>
+
+    <?= $form->field($model, 'email')->textInput(['value' => $model->email]) ?>
+
+    <?= $form->field($model, 'password_hash')->passwordInput(['value' => ''])->label("Password") ?>
+
+    <?php if ($model->id != 1): ?>
+        <?= $form->field($profile, 'nif')->textInput(['value' => $profile->nif]) ?>
+
+        <?= $form->field($profile, 'morada')->textInput(['value' => $profile->morada]) ?>
+
+        <?= $form->field($profile, 'telefone')->textInput(['value' => $profile->telefone]) ?>
+
+        <?= $form->field($model, 'status')->dropDownList($status, ['value' => $model->status]) ?>
+    <?php endif; ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

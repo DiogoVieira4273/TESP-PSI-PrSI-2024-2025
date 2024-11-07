@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\Profile;
 use common\models\User;
 use common\models\UserSearch;
 use yii\web\Controller;
@@ -55,8 +56,10 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        $profile = Profile::find()->where(['user_id' => $id])->one();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'profile' => $profile,
         ]);
     }
 
@@ -65,20 +68,63 @@ class UserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
+
     public function actionCreate()
     {
+        //iniciliaza as variaveis para a criação de um user e de um perfil
         $model = new User();
+        $profile = new Profile();
 
+        //guarda os estados disponíveis para um user
+        $status = [User::STATUS_ACTIVE => 'Ativo', User::STATUS_INACTIVE => 'Inativo'];
+
+        //se o pedido save por POST
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index']);
+            //guarda os campos do form na variavel
+            $post = $this->request->post();
+
+            //se tudo for válido
+            if ($model->load($post) && $model->validate()) {
+                //atribui o respetivo valor para cada campo do utilizador
+                $model->username = $post['User']['username'];
+                $model->email = $post['User']['email'];
+                $model->setPassword($post['User']['password_hash']);
+                $model->generateAuthKey();
+                $model->status = $post['User']['status'];
+                $model->save(false);
+
+                //se o registo do user foi concluído
+                if ($model->save()) {
+
+                    //atribui a role funcionário ao user criado
+                    $auth = \Yii::$app->authManager;
+                    $role = $auth->getRole('funcionario');
+                    $auth->assign($role, $model->id);
+
+                    //criar um perfil ao user criado
+                    //atribui o respetivo valor para cada campo do perfil
+                    $profile->nif = $post['Profile']['nif'];
+                    $profile->morada = $post['Profile']['morada'];
+                    $profile->telefone = $post['Profile']['telefone'];
+                    $profile->user_id = $model->id;
+
+                    //se o registo do perfil foi concluído
+                    if ($profile->save()) {
+                        //redireciona para a página view do user criado
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                }
             }
         } else {
+            //se ocorrer erro devolve os valores do user inseridos no formulário
             $model->loadDefaultValues();
         }
 
+        //faz render da página de create e manda os dados principais para o user e perfil, e os respetivos status
         return $this->render('create', [
             'model' => $model,
+            'profile' => $profile,
+            'status' => $status,
         ]);
     }
 
@@ -89,16 +135,68 @@ class UserController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
+
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        //inicializa as variaveis para a edição do user e do perfil
+        $model = User::findOne($id);
+        $profile = Profile::findOne(['user_id' => $model->id]);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        //guarda os estados disponíveis para um user
+        $status = [User::STATUS_ACTIVE => 'Ativo', User::STATUS_INACTIVE => 'Inativo'];
+
+        //se o pedido save por POST
+        if ($this->request->isPost) {
+            //guarda os campos do form na variavel
+            $post = $this->request->post();
+
+            //se tudo for válido
+            if ($model->load($post) && $model->validate()) {
+                //atribui o respetivo valor para cada campo do utilizador
+                $model->username = $post['User']['username'];
+                $model->email = $post['User']['email'];
+
+                //se o campo da password não estiver vazio
+                if ($post['User']['password_hash'] != null) {
+                    $model->setPassword($post['User']['password_hash']);
+                }
+
+                //se o user a alterar for o admin principal, não faz este código
+                if ($model->id != 1) {
+                    $model->status = $post['User']['status'];
+                }
+                $model->save(false);
+
+                //se a edição do user foi concluída
+                if ($model->save()) {
+
+                    //se o user a atualizar os dados for o admin principal, faz redirect para a view, saltando os campos de profile
+                    if ($model->id == 1) {
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                    //editar o perfil do user criado
+                    //atribui o respetivo valor para cada campo do perfil
+                    $profile->nif = $post['Profile']['nif'];
+                    $profile->morada = $post['Profile']['morada'];
+                    $profile->telefone = $post['Profile']['telefone'];
+
+                    //se a edição do perfil foi concluída
+                    if ($profile->save()) {
+                        //redireciona para a página view do user editado
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                }
+            }
+        } else {
+            //se ocorrer erro devolve os valores do user inseridos no formulário
+            $model->loadDefaultValues();
         }
 
+        //faz render da página de create e manda os dados principais para o user e perfil, e os respetivos status
         return $this->render('update', [
             'model' => $model,
+            'profile' => $profile,
+            'status' => $status,
         ]);
     }
 
@@ -111,7 +209,11 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if ($id != 1) {
+            $profile = Profile::findOne(['user_id' => $id]);
+            $profile->delete();
+            $this->findModel($id)->delete();
+        }
 
         return $this->redirect(['index']);
     }
