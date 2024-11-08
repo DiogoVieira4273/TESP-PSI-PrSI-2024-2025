@@ -30,6 +30,7 @@ class Marca extends \yii\db\ActiveRecord
     {
         return [
             [['nomeMarca'], 'required'],
+            [['nomeMarca'], 'unique','message'=>'Esta marca ja esta criada'],
             [['nomeMarca'], 'string', 'max' => 45],
         ];
     }

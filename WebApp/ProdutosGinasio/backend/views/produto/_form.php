@@ -25,66 +25,15 @@ use common\models\Tamanho;
 
     <?= $form->field($model, 'descricaoProduto')->textarea(['rows' => 6]) ?>
 
+    <?= $form->field($model, 'marca_id')->dropDownList($marcas,['prompt' => 'Selecione uma Marca']) ?>
 
-    <!-- Campo de seleção para Marca -->
-    <?= $form->field($model, 'marca_id')->dropdownList(
-        (function() {
-            $marcas = Marca::find()->all();
-            $marcaOptions = ['' => 'Selecione uma Marca'];
-            foreach ($marcas as $marca) {
-                $marcaOptions[$marca->id] = $marca->nomeMarca;
-            }
-            return $marcaOptions;
-        })()
-    ) ?>
+    <?= $form->field($model, 'categoria_id')->dropDownList($categorias,['prompt' => 'Selecione uma Categoria']) ?>
 
-    <!-- Campo de seleção para Categoria -->
-    <?= $form->field($model, 'categoria_id')->dropdownList(
-        (function() {
-            $categorias = Categoria::find()->all();
-            $categoriaOptions = ['' => 'Selecione uma Categoria'];
-            foreach ($categorias as $categoria) {
-                $categoriaOptions[$categoria->id] = $categoria->nomeCategoria;
-            }
-            return $categoriaOptions;
-        })()
-    ) ?>
+    <?= $form->field($model, 'iva_id')->dropDownList($ivas,['prompt' => 'Selecione um Iva']) ?>
 
-    <!-- Campo de seleção para IVA -->
-    <?= $form->field($model, 'iva_id')->dropdownList(
-        (function() {
-            $ivas = Iva::find()->all();
-            $ivaOptions = ['' => 'Selecione um IVA'];
-            foreach ($ivas as $iva) {
-                $ivaOptions[$iva->id] = $iva->percentagem . '%';
-            }
-            return $ivaOptions;
-        })()
-    ) ?>
+    <?= $form->field($model, 'genero_id')->dropDownList($generos,['prompt' => 'Selecione um Genero']) ?>
 
-    <!-- Campo de seleção para Gênero -->
-    <?= $form->field($model, 'genero_id')->dropdownList(
-        (function() {
-            $generos = Genero::find()->all();
-            $generoOptions = ['' => 'Selecione um Gênero'];
-            foreach ($generos as $genero) {
-                $generoOptions[$genero->id] = $genero->referencia;
-            }
-            return $generoOptions;
-        })()
-    ) ?>
-
-    <!-- Campo de seleção para Tamanho -->
-    <?= $form->field($model, 'tamanho_id')->dropdownList(
-        (function() {
-            $tamanhos = Tamanho::find()->all();
-            $tamanhoOptions = ['' => 'Selecione um Tamanho'];
-            foreach ($tamanhos as $tamanho) {
-                $tamanhoOptions[$tamanho->id] = $tamanho->referencia;
-            }
-            return $tamanhoOptions;
-        })()
-    ) ?>
+    <?= $form->field($model, 'tamanho_id')->dropDownList($tamanhos,['prompt' => 'Selecione um Tamanho']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
@@ -93,3 +42,4 @@ use common\models\Tamanho;
     <?php ActiveForm::end(); ?>
 
 </div>
+

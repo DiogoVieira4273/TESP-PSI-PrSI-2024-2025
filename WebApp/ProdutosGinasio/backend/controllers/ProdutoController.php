@@ -74,11 +74,11 @@ class ProdutoController extends Controller
     {
         $model = new Produto();
 
-        $marcas = Marca::find()->all();
-        $tamanhos = Tamanho::find()->all();
-        $categorias = Categoria::find()->all();
-        $ivas = Iva::find()->all();
-        $generos = Genero::find()->all();
+        $marcas = Marca::find()->select(['nomeMarca', 'id'])->indexBy('id')->column();
+        $categorias = Categoria::find()->select(['nomeCategoria', 'id'])->indexBy('id')->column();
+        $tamanhos = Tamanho::find()->select(['referencia', 'id'])->indexBy('id')->column();
+        $generos = Genero::find()->select(['referencia', 'id'])->indexBy('id')->column();
+        $ivas = Iva::find()->where(['vigor' => 1])->select(['percentagem', 'id'])->indexBy('id')->column();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -148,3 +148,4 @@ class ProdutoController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
+
