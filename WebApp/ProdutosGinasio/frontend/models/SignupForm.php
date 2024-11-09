@@ -48,25 +48,20 @@ class SignupForm extends Model
     public function signup()
     {
         if ($this->validate()) {
-            if ($this->username !== 'cliente') {
-                $user = new User();
-                $user->username = $this->username;
-                $user->email = $this->email;
-                $user->setPassword($this->password);
-                $user->generateAuthKey();
-                $user->save(false);
+            $user = new User();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->setPassword($this->password);
+            $user->generateAuthKey();
+            $user->save(false);
 
-                $auth = Yii::$app->authManager;
-                $cliente = $auth->getRole('cliente');
-                $auth->assign($cliente, $user->getId());
+            $auth = Yii::$app->authManager;
+            $cliente = $auth->getRole('cliente');
+            $auth->assign($cliente, $user->getId());
 
-                $user->status = User::STATUS_ACTIVE;
+            $user->status = User::STATUS_ACTIVE;
 
-                return $user->save();
-            }
-            else {
-                Yii::$app->session->setFlash('error', 'Campo username inválido!');
-            }
+            return $user->save();
         }
         return null;
     }
