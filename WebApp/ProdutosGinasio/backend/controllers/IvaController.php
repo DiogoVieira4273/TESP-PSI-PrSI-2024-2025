@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\Iva;
 use common\models\IvaSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -70,13 +71,31 @@ class IvaController extends Controller
         $model = new Iva();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index']);
+            // Carregar os dados do formulário no modelo
+            $model->load($this->request->post());
+
+            // Converte a percentagem para float e arredonda para 2 casas decimais
+            $percentagem = round((float)$model->percentagem, 2);
+
+            // Verifica se já existe um IVA com uma percentagem próxima ao valor informado, dentro de uma margem de 0.0001.
+            $ivaExistente = Iva::find()
+                ->where(['between', 'percentagem', $percentagem - 0.0001, $percentagem + 0.0001])
+                ->exists();
+
+            if ($ivaExistente) {
+                // Define a mensagem de erro e permanece na página de criação
+                Yii::$app->session->setFlash('error', 'Esta percentagem de IVA já existe.');
+            } else {
+                // Salva o modelo somente se não houver duplicata
+                if ($model->save()) {
+                    return $this->redirect(['index']);
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
 
+        // Renderiza a página de criação com o modelo e exibe qualquer mensagem de erro definida
         return $this->render('create', [
             'model' => $model,
         ]);
