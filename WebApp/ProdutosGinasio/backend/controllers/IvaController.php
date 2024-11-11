@@ -5,6 +5,7 @@ namespace backend\controllers;
 use common\models\Iva;
 use common\models\IvaSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,17 @@ class IvaController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'create', 'view', 'update', 'delete', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'create', 'view', 'update', 'delete', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin','funcionario'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -69,6 +81,7 @@ class IvaController extends Controller
     public function actionCreate()
     {
         $model = new Iva();
+        $vigor = [0=>'não vigor', 1=>'vigor'];
 
         if ($this->request->isPost) {
             // Carregar os dados do formulário no modelo
@@ -98,6 +111,7 @@ class IvaController extends Controller
         // Renderiza a página de criação com o modelo e exibe qualquer mensagem de erro definida
         return $this->render('create', [
             'model' => $model,
+            'vigor' => $vigor,
         ]);
     }
 

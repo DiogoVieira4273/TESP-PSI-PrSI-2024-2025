@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'vigor' => $vigor,
     ]) ?>
 
     <?php if (Yii::$app->session->hasFlash('error')): ?>
