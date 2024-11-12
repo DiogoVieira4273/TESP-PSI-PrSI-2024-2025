@@ -113,7 +113,7 @@ class UserController extends Controller
                     //atribui o respetivo valor para cada campo do utilizador
                     $model->username = $post['User']['username'];
                     $model->email = $post['User']['email'];
-                    $model->setPassword($post['User']['password_hash']);
+                    $model->setPassword($post['User']['password']);
                     $model->generateAuthKey();
                     $model->status = $post['User']['status'];
                     $model->save(false);
@@ -154,6 +154,7 @@ class UserController extends Controller
             'status' => $status,
         ]);
     }
+
 
     /**
      * Updates an existing User model.

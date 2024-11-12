@@ -89,7 +89,7 @@ class SiteController extends Controller
 
             // Caso o usuário não tenha permissão, faz logout e redireciona com uma mensagem de erro
             Yii::$app->user->logout();
-            Yii::$app->session->setFlash('error', 'Acesso negado. Você não tem permissão para acessar o backend.');
+            Yii::$app->session->setFlash('error', 'Acesso negado. Não tem permissão para aceder o backend.');
             return $this->redirect(['login']);
         }
         $model->password = '';
