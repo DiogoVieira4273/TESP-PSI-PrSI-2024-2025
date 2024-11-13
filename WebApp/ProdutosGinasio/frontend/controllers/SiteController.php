@@ -90,11 +90,18 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            if (Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'cliente')) {
+                return $this->goHome();
+            } else {
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', 'Acesso negado. Apenas clientes podem aceder.');
+                return $this->redirect(['login']);
+            }
         }
 
-        $model->password = '';
+        $model->password = ''; // Limpa o campo de senha após tentativa de login
 
         return $this->render('login', [
             'model' => $model,
