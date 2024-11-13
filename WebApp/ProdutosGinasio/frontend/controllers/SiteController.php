@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Produto;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -75,7 +76,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $produtosRecentes = Produto::find()->orderBy(['id' => SORT_DESC])->limit(9)->all();
+
+        return $this->render('index', ['produtosRecentes' => $produtosRecentes]);
     }
 
     /**
