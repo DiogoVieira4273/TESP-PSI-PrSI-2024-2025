@@ -43,12 +43,14 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+    <h3>Imagens:</h3>
 
-    <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
-
-    <button>Submit</button>
-
-    <?php ActiveForm::end() ?>
+    <div class="product-images">
+        <?php foreach ($model->imagens as $imagem): ?>
+            <div class="image-container">
+                <?= Html::img(Yii::getAlias('@web/uploads/') . $imagem->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
 </div>

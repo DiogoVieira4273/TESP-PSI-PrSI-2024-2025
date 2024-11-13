@@ -51,9 +51,12 @@ class UserController extends Controller
      */
     public function actionIndex()
     {
+        //criar a instância do User
         $searchModel = new UserSearch();
+        //seleciona todos os dados da tabela de utilizadores
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        //faz render da página index com todos os utilizadores armazenados na base dados
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -68,7 +71,10 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        //seleciona o utilizador pretendido
         $profile = Profile::find()->where(['user_id' => $id])->one();
+
+        //faz render da página view com os dados do utilizador selecionado
         return $this->render('view', [
             'model' => $this->findModel($id),
             'profile' => $profile,
@@ -166,6 +172,7 @@ class UserController extends Controller
 
     public function actionUpdate($id)
     {
+        //se o utilizador a editar não for o 1
         if ($id != 1) {
             //inicializa as variaveis para a edição do user e do perfil
             $model = User::findOne($id);
@@ -207,6 +214,7 @@ class UserController extends Controller
                             $model->setPassword($post['User']['password_hash']);
                         }
 
+                        //atribui o respetivo status do utilizador a editar
                         $model->status = $post['User']['status'];
                         $model->save(false);
 
@@ -252,12 +260,17 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
+        //se o user selecionado não for o 1
         if ($id != 1) {
+            //selecionar o perfil do utilizador
             $profile = Profile::findOne(['user_id' => $id]);
+            //apagar registo de perfil
             $profile->delete();
+            //apagar o utilizador na base dados
             $this->findModel($id)->delete();
         }
 
+        //redireciona para a página de index
         return $this->redirect(['index']);
     }
 
@@ -270,7 +283,9 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
+        //se econtrar o modelo de dados do Utilizador selecionado
         if (($model = User::findOne(['id' => $id])) !== null) {
+            //devolve o modelo de dados
             return $model;
         }
 
