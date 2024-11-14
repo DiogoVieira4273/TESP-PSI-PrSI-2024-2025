@@ -99,21 +99,22 @@ $this->title = 'Produtos de Ginásio';
     <div class="container">
         <div class="heading_container heading_center">
             <h2>
-                New products
+                Novos Produtos
             </h2>
         </div>
         <div class="product_container">
             <div class="row">
                 <?php foreach ($produtosRecentes as $produtoRecente): ?>
-                <div class="col-sm-6 col-md-4 ">
-                    <div class="box">
-                        <a href="" class="p_cart">
-                            <i class="fa fa-cart-plus" aria-hidden="true"></i>
-                        </a>
-                        <div class="img-box">
-                            <img src="images/p1.png" alt="">
-                        </div>
-                        <div class="detail-box">
+                    <div class="col-sm-6 col-md-4 ">
+                        <div class="box">
+                            <a href="" class="p_cart">
+                                <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                            </a>
+                            <div class="img-box">
+                                <?= Html::img(Yii::getAlias('@web/uploads/') . $produtoRecente->imagens[0]->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?>
+
+                            </div>
+                            <div class="detail-box">
                 <span class="p_rating">
                   <a href="">
                     <i class="fa fa-star" aria-hidden="true"></i>
@@ -131,17 +132,17 @@ $this->title = 'Produtos de Ginásio';
                     <i class="fa fa-star" aria-hidden="true"></i>
                   </a>
                 </span>
-                            <a href="" class="p_name">
-                                <?= Html::Encode($produtoRecente->nomeProduto) ?>
-                            </a>
-                            <h6 class="p_price">
+                                <a href="" class="p_name">
+                                    <?= Html::Encode($produtoRecente->nomeProduto) ?>
+                                </a>
+                                <h6 class="p_price">
                               <span class="new_price">
                                 <?= number_format($produtoRecente->preco, 2, ',', '.') ?>€
                               </span>
-                            </h6>
+                                </h6>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <?php endforeach; ?>
             </div>
         </div>

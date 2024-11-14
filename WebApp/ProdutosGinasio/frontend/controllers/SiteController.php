@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Imagem;
 use common\models\Produto;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
@@ -76,7 +77,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $produtosRecentes = Produto::find()->orderBy(['id' => SORT_DESC])->limit(9)->all();
+        $produtosRecentes = Produto::find()->with(['imagens'])->orderBy(['id' => SORT_DESC])->limit(9)->all();
 
         return $this->render('index', ['produtosRecentes' => $produtosRecentes]);
     }
