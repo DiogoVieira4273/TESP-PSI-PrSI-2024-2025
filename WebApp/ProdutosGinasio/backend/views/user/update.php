@@ -6,9 +6,9 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var common\models\User $model */
 
-$this->title = 'Atualizar Utilizador: ' . $user->id;
+$this->title = 'Atualizar Utilizador: ' . $user->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $user->id, 'url' => ['view', 'id' => $user->id]];
+$this->params['breadcrumbs'][] = ['label' => $user->username, 'url' => ['view', 'id' => $user->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="user-update">
