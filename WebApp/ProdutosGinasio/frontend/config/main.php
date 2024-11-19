@@ -38,14 +38,15 @@ return [
             'errorAction' => 'site/error',
         ],
 
-        'layout' => '@frontend/views/layouts/main.php',
+        'layout' => 'main.php',
 
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'update' => 'user/update',
-                'view' => 'user/view',
+                'detalhesProduto' => 'produto/detalhes',
+                'updateCliente' => 'user/update',
+                'cliente' => 'user/view',
                 'about' => 'site/about',
                 'contact' => 'site/contact',
                 'signup' => 'site/signup',
