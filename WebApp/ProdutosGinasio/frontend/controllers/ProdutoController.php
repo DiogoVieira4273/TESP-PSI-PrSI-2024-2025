@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Imagem;
 use common\models\Produto;
 use common\models\ProdutoSearch;
 use yii\filters\AccessControl;
@@ -42,7 +43,7 @@ class ProdutoController extends Controller
         $produtos = Produto::find()->all();
 
         return $this->render('index', [
-            'produtos' => $produtos, // Enviar a lista de produtos para a view
+            'produtos' => $produtos,
         ]);
     }
 
@@ -56,6 +57,7 @@ class ProdutoController extends Controller
     {
         return $this->render('detalhes', [
             'model' => $this->findModel($id),
+            'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),
         ]);
     }
 

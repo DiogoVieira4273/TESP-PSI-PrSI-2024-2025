@@ -17,7 +17,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="container">
         <div class="container">
             <h1><?= Html::encode($this->title) ?></h1>
-
             <!-- Verificação se existem produtos -->
             <?php if (empty($produtos)): ?>
                 <p>Sem produtos disponíveis</p>
