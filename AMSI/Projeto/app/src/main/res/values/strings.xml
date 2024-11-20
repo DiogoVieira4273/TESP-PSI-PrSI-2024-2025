@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ProdutosGinasio</string>
+    <string name="txt_username">Introduza o username</string>
+    <string name="txt_password">Introduza a password</string>
+    <string name="txt_login">Login</string>
+    <string name="txt_email">Introduza o email</string>
+    <string name="txt_ip">Introduza o IP</string>
+    <string name="txt_ligacao_servidor">Ligar ao servidor</string>
+    <string name="txt_registar">Registar</string>
 </resources>
