@@ -38,12 +38,11 @@ class ProdutoController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ProdutoSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        // Buscar todos os produtos disponíveis
+        $produtos = Produto::find()->all();
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'produtos' => $produtos, // Enviar a lista de produtos para a view
         ]);
     }
 

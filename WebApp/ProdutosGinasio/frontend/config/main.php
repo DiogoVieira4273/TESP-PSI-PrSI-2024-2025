@@ -45,6 +45,7 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'detalhesProduto' => 'produto/detalhes',
+                'produto' => 'produto/index',
                 'updateCliente' => 'user/update',
                 'cliente' => 'user/view',
                 'about' => 'site/about',
