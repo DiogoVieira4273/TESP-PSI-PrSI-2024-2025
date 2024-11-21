@@ -7,4 +7,8 @@
     <string name="txt_ip">Introduza o IP</string>
     <string name="txt_ligacao_servidor">Ligar ao servidor</string>
     <string name="txt_registar">Registar</string>
+    <string name="ndOpen">Open</string>
+    <string name="ndClose">Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

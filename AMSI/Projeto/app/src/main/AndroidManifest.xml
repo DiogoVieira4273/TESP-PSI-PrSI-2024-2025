@@ -13,6 +13,14 @@
         android:theme="@style/Theme.ProdutosGinasio"
         tools:targetApi="31">
         <activity
+            android:name=".MenuMainActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.ProdutosGinasio.NoActionBar" />
+        <activity
+            android:name=".DetalhesProdutoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ipActivity"
             android:exported="false" />
         <activity
