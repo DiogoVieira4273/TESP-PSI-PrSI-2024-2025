@@ -44,6 +44,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'produtosFiltrados' => 'produto/filtrar',
                 'detalhesProduto' => 'produto/detalhes',
                 'produto' => 'produto/index',
                 'updateCliente' => 'user/update',
