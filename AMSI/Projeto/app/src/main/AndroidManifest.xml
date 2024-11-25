@@ -13,6 +13,27 @@
         android:theme="@style/Theme.ProdutosGinasio"
         tools:targetApi="31">
         <activity
+            android:name=".HistoricoDeComprasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CarrinhoDeComprasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ItemHistoricoDeComprasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ItemCarrinhoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalhesCarrinhoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ListaDetalhesProdutosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProdutosListaActivity"
+            android:exported="false" />
+        <activity
             android:name=".MenuMainActivity"
             android:exported="false"
             android:launchMode="singleTop"

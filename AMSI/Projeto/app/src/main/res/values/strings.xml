@@ -11,4 +11,13 @@
     <string name="ndClose">Close</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_preco">Preço:</string>
+    <string name="txt_nome">Nome:</string>
+    <string name="txt_finalizar_compra">Finalizar Compra</string>
+    <string name="txt_carrinho_de_compras">Carrinho de Compras</string>
+    <string name="txt_total">Total:</string>
+    <string name="txt_historico_de_compras">Histórico de Compras</string>
+    <string name="txt_compra_realizada_em">Compra realizada em:</string>
+    <string name="txt_data">Data</string>
+    <string name="txt_hora">Hora</string>
 </resources>
