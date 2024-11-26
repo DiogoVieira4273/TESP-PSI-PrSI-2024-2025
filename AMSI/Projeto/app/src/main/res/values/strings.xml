@@ -20,4 +20,5 @@
     <string name="txt_compra_realizada_em">Compra realizada em:</string>
     <string name="txt_data">Data</string>
     <string name="txt_hora">Hora</string>
+    <string name="txt_atualizar_perfil">Atualizar Perfil</string>
 </resources>

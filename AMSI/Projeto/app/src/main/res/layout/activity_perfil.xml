@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="5dp"
     android:orientation="vertical"
     tools:context=".PerfilActivity">
 
@@ -22,7 +23,7 @@
             android:id="@+id/imageUserProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_user_person" />
+            android:src="@drawable/ic_user_person" />
 
         <Space
             android:layout_width="match_parent"
@@ -32,38 +33,36 @@
         <EditText
             android:id="@+id/etUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:text="EditText" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:text="EditText" />
 
         <EditText
             android:id="@+id/etNif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:text="EditText" />
 
         <EditText
             android:id="@+id/etMorada"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:text="EditText" />
 
         <EditText
             android:id="@+id/etTelefone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:layout_height="wrap_content" />
 
         <Space
             android:layout_width="match_parent"
@@ -75,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClickAtualizarPerfil"
-            android:text="Atualizar Perfil" />
+            android:text="@string/txt_atualizar_perfil" />
 
         <Space
             android:layout_width="match_parent"
