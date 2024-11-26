@@ -21,4 +21,5 @@
     <string name="txt_data">Data</string>
     <string name="txt_hora">Hora</string>
     <string name="txt_atualizar_perfil">Atualizar Perfil</string>
+    <string name="txt_historico_de_encomendas">Histórico de Encomendas</string>
 </resources>

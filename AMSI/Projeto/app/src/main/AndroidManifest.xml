@@ -13,7 +13,7 @@
         android:theme="@style/Theme.ProdutosGinasio"
         tools:targetApi="31">
         <activity
-            android:name=".PerfilAtualizarActivity"
+            android:name=".HistoricoDeEncomendasActivity"
             android:exported="false" />
         <activity
             android:name=".PerfilActivity"
