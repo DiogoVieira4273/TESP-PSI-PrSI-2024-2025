@@ -23,43 +23,43 @@ class ImagemForm extends Model
 
     public function upload($id)
     {
-        // Verificar se há imagens para upload e se a validação foi bem-sucedida
+        //se existirem imagens para upload
         if ($this->validate()) {
             foreach ($this->imagens as $file) {
-                // Gerar uma random string para o nome do arquivo
+                //gerar uma random string para o nome do ficheiro
                 $key = Yii::$app->getSecurity()->generateRandomString();
 
-                // Caminho completo para salvar a imagem no backend
+                //caminho completo para salvar a imagem
                 $backendPath = Yii::getAlias('@backend/web/uploads/') . $key . '.' . $file->extension;
 
-                // Diretório da pasta de uploads
+                //local da pasta de uploads
                 $backendDir = dirname($backendPath);
 
-                // Verificar se o diretório existe; caso contrário, criar
+                //verificar se a pasta existe, caso contrário criar a pasta
                 if (!is_dir($backendDir)) {
                     if (!mkdir($backendDir, 0777, true) && !is_dir($backendDir)) {
-                        throw new \Exception('Falha ao criar o diretório: ' . $backendDir);
+                        throw new \Exception('Falha ao criar a pasta de uploads: ' . $backendDir);
                     }
                 }
 
-                // Verificar se o diretório é gravável
+                //verificar se a pasta permite gravar os ficheiros
                 if (!is_writable($backendDir)) {
-                    throw new \Exception('O diretório não é gravável: ' . $backendDir);
+                    throw new \Exception('A pasta não permite gravar: ' . $backendDir);
                 }
 
-                // Salvar o arquivo no diretório especificado
+                //guardar o ficheiro na pasta especificada
                 if (!$file->saveAs($backendPath)) {
-                    throw new \Exception('Erro ao salvar o arquivo em: ' . $backendPath);
+                    throw new \Exception('Erro ao guardar o ficheiro em: ' . $backendPath);
                 }
 
-                // Criar o registro no banco de dados
+                //criar o registo na base de dados
                 $imagem = new Imagem();
                 $imagem->filename = $key . '.' . $file->extension;
                 $imagem->produto_id = $id;
 
-                // Salvar o registro no banco de dados
+                //guardar o registo na base de dados
                 if (!$imagem->save()) {
-                    throw new \Exception('Erro ao salvar os dados da imagem no banco de dados.');
+                    throw new \Exception('Erro ao salvar os dados da imagem na base de dados.');
                 }
             }
         }
@@ -67,9 +67,10 @@ class ImagemForm extends Model
 
     public function update($id)
     {
-        //se existir imagens para upload
+        //se existirem imagens para upload
         if ($this->validate()) {
 
+            //selecionar na base de dados, a imagem pretendida para editar
             $imagem = Imagem::findOne($id);
             $file = $this->imagens[0];
             $key = Yii::$app->getSecurity()->generateRandomString();
