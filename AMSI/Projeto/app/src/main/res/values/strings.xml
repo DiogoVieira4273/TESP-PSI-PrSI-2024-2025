@@ -22,4 +22,13 @@
     <string name="txt_hora">Hora</string>
     <string name="txt_atualizar_perfil">Atualizar Perfil</string>
     <string name="txt_historico_de_encomendas">Histórico de Encomendas</string>
+    <string name="txt_cupao">Cupão</string>
+    <string name="txt_aplicar">Aplicar</string>
+    <string name="txt_inserir_codigo">Inserir código do cupão</string>
+    <string name="txt_dados_do_utilizador">Dados do Utilizador:</string>
+    <string name="txt_morada">Morada</string>
+    <string name="txt_telemóvel">Telemóvel</string>
+    <string name="txt_nif">NIF</string>
+    <string name="txt_metodos_de_pagamento">Métodos de Pagamento</string>
+    <string name="txt_metodo_de_entrega">Método de Entrega</string>
 </resources>

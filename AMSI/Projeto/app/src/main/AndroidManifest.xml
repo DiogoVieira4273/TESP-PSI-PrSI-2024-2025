@@ -13,6 +13,12 @@
         android:theme="@style/Theme.ProdutosGinasio"
         tools:targetApi="31">
         <activity
+            android:name=".FinalizarCompraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProdutosActivity"
+            android:exported="false" />
+        <activity
             android:name=".HistoricoDeEncomendasActivity"
             android:exported="false" />
         <activity
