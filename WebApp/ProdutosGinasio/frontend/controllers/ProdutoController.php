@@ -8,6 +8,7 @@ use common\models\Imagem;
 use common\models\Marca;
 use common\models\Produto;
 use common\models\ProdutoSearch;
+use common\models\ProdutosHasTamanho;
 use frontend\models\Favorito;
 use Yii;
 use yii\filters\AccessControl;
@@ -145,6 +146,7 @@ class ProdutoController extends Controller
         return $this->render('detalhes', [
             'model' => $this->findModel($id),
             'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),
+            'tamanhos' => ProdutosHasTamanho::find()->where(['produto_id' => $id])->andWhere(['>', 'quantidade',0])->all(),
         ]);
     }
 

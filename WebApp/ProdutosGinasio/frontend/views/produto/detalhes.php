@@ -46,6 +46,10 @@ $this->title = $model->nomeProduto;
             <p><label>Categoria: <?= Html::encode($model->categoria->nomeCategoria) ?></label></p>
             <p><label>Iva: <?= Html::encode($model->iva->percentagem) ?></label></p>
             <p><label>Género: <?= Html::encode($model->genero->referencia) ?></label></p>
+            <?php foreach ($model->tamanhos as $tamanho): ?>
+                <p><button><?= Html::encode($tamanho->referencia) ?></button></p>
+            <?php endforeach; ?>
+
             <a href="">
                 <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
             </a>
