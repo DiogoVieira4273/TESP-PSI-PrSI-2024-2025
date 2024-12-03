@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Avaliacao;
 use common\models\Categoria;
 use common\models\Genero;
 use common\models\Imagem;
@@ -9,6 +10,7 @@ use common\models\Marca;
 use common\models\Produto;
 use common\models\ProdutoSearch;
 use common\models\ProdutosHasTamanho;
+use common\models\Profile;
 use frontend\models\Favorito;
 use Yii;
 use yii\filters\AccessControl;
@@ -75,7 +77,7 @@ class ProdutoController extends Controller
         $isFavorited = false;
         if (!Yii::$app->user->isGuest) {
             $user_id = Yii::$app->user->identity->id;
-            $profile = \common\models\Profile::findOne(['user_id' => $user_id]);
+            $profile = Profile::findOne(['user_id' => $user_id]);
 
             if ($profile) {
                 $isFavorited = Favorito::find()->where([
@@ -143,11 +145,14 @@ class ProdutoController extends Controller
      */
     public function actionDetalhes($id)
     {
-        return $this->render('detalhes', [
-            'model' => $this->findModel($id),
+        $avaliacoes = Avaliacao::find()->where(['produto_id' => $id])->all();
+        
+        //faz render da página
+        return $this->render('detalhes', ['model' => $this->findModel($id),
             'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),
-            'tamanhos' => ProdutosHasTamanho::find()->where(['produto_id' => $id])->andWhere(['>', 'quantidade',0])->all(),
-        ]);
+            'tamanhos' => ProdutosHasTamanho::find()->where(['produto_id' => $id])->andWhere(['>', 'quantidade', 0])->all(),
+            'avaliacao' => new Avaliacao(),
+            'avaliacoes' => $avaliacoes,]);
     }
 
     /**
