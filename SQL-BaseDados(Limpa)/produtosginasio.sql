@@ -22,7 +22,8 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-
+CREATE DATABASE produtosginasio;
+USE produtosginasio;
 --
 -- Estrutura da tabela `auth_assignment`
 --
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `auth_assignment` (
   `created_at` int DEFAULT NULL,
   PRIMARY KEY (`item_name`,`user_id`),
   KEY `idx-auth_assignment-user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `auth_item` (
   PRIMARY KEY (`name`),
   KEY `rule_name` (`rule_name`),
   KEY `idx-auth_item-type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -68,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `auth_item_child` (
   `child` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`parent`,`child`),
   KEY `child` (`child`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -83,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `auth_rule` (
   `created_at` int DEFAULT NULL,
   `updated_at` int DEFAULT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -100,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `avaliacoes` (
   PRIMARY KEY (`id`),
   KEY `fk_avaliacoes_produtos1_idx` (`produto_id`),
   KEY `fk_avaliacoes_profiles1_idx` (`profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -116,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `carrinhocompras` (
   `profile_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_carrinhocompras_profiles1_idx` (`profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -129,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `categorias` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nomeCategoria` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -145,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `compras` (
   `fornecedor_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_compras_fornecedores1_idx` (`fornecedor_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -161,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `cupoesdescontos` (
   `dataFim` date NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `codigo_UNIQUE` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -181,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `encomendas` (
   `profile_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_encomendas_profiles1_idx` (`profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -206,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `faturas` (
   KEY `fk_faturas_metodosentregas1_idx` (`metodoentrega_id`),
   KEY `fk_faturas_profiles1_idx` (`profile_id`),
   KEY `fk_faturas_encomendas1_idx` (`encomenda_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -222,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `favoritos` (
   PRIMARY KEY (`id`),
   KEY `fk_favoritos_produtos1_idx` (`produto_id`),
   KEY `fk_favoritos_profiles1_idx` (`profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -239,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `fornecedores` (
   `marca_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_fornecedores_marcas1_idx` (`marca_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -252,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `generos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `referencia` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -267,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `imagens` (
   `produto_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_imagens_produtos1_idx` (`produto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -281,7 +282,7 @@ CREATE TABLE IF NOT EXISTS `ivas` (
   `percentagem` float NOT NULL,
   `vigor` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -302,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `linhascarrinhos` (
   PRIMARY KEY (`id`),
   KEY `fk_linhasCarrinhos_carrinhocompras1_idx` (`carrinhocompras_id`),
   KEY `fk_linhasCarrinhos_produtos1_idx` (`produto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -321,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `linhascompras` (
   PRIMARY KEY (`id`),
   KEY `fk_linhascompras_compras1_idx` (`compra_id`),
   KEY `fk_linhascompras_produtos1_idx` (`produto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -342,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `linhasfaturas` (
   `fatura_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_linhasfaturas_faturas1_idx` (`fatura_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -355,7 +356,7 @@ CREATE TABLE IF NOT EXISTS `marcas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nomeMarca` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -371,7 +372,7 @@ CREATE TABLE IF NOT EXISTS `metodosentregas` (
   `preco` float NOT NULL,
   `vigor` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -384,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `metodospagamentos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `metodoPagamento` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -397,7 +398,7 @@ CREATE TABLE IF NOT EXISTS `migration` (
   `version` varchar(180) NOT NULL,
   `apply_time` int DEFAULT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -421,7 +422,7 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   KEY `fk_produtos_categorias1_idx` (`categoria_id`),
   KEY `fk_produtos_ivas1_idx` (`iva_id`),
   KEY `fk_produtos_generos1_idx` (`genero_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -437,7 +438,7 @@ CREATE TABLE IF NOT EXISTS `produtos_has_tamanhos` (
   PRIMARY KEY (`produto_id`,`tamanho_id`),
   KEY `fk_produtos_has_tamanhos_tamanhos1_idx` (`tamanho_id`),
   KEY `fk_produtos_has_tamanhos_produtos1_idx` (`produto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -454,7 +455,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_profiles_user1_idx` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -467,7 +468,7 @@ CREATE TABLE IF NOT EXISTS `tamanhos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `referencia` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -491,7 +492,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `password_reset_token` (`password_reset_token`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Extraindo dados da tabela `user`
@@ -515,7 +516,7 @@ CREATE TABLE IF NOT EXISTS `usocupoes` (
   PRIMARY KEY (`id`),
   KEY `fk_usocupoes_cupoesdescontos1_idx` (`cupaodesconto_id`),
   KEY `fk_usocupoes_profiles1_idx` (`profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Restrições para despejos de tabelas
