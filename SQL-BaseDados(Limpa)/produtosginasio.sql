@@ -3,11 +3,7 @@
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Banco de dados: `produtosginasio`
-CREATE DATABASE produtosginasio;
-USE produtosginasio;
---
+
 
 -- --------------------------------------------------------
 CREATE DATABASE produtosginasio;
