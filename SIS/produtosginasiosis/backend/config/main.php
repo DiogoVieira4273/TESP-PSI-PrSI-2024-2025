@@ -55,14 +55,16 @@ return [
                         'GET buscarpormarca/{marca_id}' => 'buscarpormarca',
                         'GET buscarporcategoria/{categoria_id}' => 'buscarporcategoria',
                         'GET buscarporgenero/{genero_id}' => 'buscarporgenero',
+                        'GET imagens/{produto_id}' => 'imagens',
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\d+>',
                         '{nomeProduto}' => '<nomeProduto:[\\w ]+>', //[a-zA-Z0-9_] 1 ou + vezes (char)
-                        '{tamanho_id}' => '<tamanho_id:\\d+>', // tamanho do produto
+                        '{tamanho_id}' => '<tamanho_id:\\d+>',
                         '{marca_id}' => '<marca_id:\\d+>',
                         '{categoria_id}' => '<categoria_id:\\d+>',
                         '{genero_id}' => '<genero_id:\\d+>',
+                        '{produto_id}' => '<produto_id:\\d+>',
                     ],
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/favorito',
@@ -71,7 +73,6 @@ return [
                         'GET favoritos' => 'favoritos',
                     ],
                 ],
-
             ],
         ],
 
