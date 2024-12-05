@@ -125,7 +125,7 @@ class CarrinhocompraController extends Controller
             'produto_id' => $produto_id,
         ]);
 
-        if ($linhaCarrinho) {
+        /*if ($linhaCarrinho) {
             // Se o produto já estiver no carrinho, apenas aumenta a quantidade
             $linhaCarrinho->quantidade += 1;
             $linhaCarrinho->subtotal += $linhaCarrinho->precoUnit;
@@ -141,7 +141,24 @@ class CarrinhocompraController extends Controller
             $linhaCarrinho->valorComIva = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
             $linhaCarrinho->subtotal = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
             $linhaCarrinho->save();
+        }*/
+        if ($linhaCarrinho) {
+            // Se o produto já estiver no carrinho, redireciona com mensagem de aviso
+            Yii::$app->session->setFlash('warning', 'Este produto já está no seu carrinho.');
+            return $this->redirect(['index']);
         }
+
+// Adiciona um novo item ao carrinho
+        $linhaCarrinho = new Linhacarrinho();
+        $linhaCarrinho->carrinhocompras_id = $carrinho->id;
+        $linhaCarrinho->produto_id = $produto_id;
+        $linhaCarrinho->quantidade = 1;
+        $linhaCarrinho->precoUnit = $produto->preco;
+        $linhaCarrinho->valorIva = $produto->preco * ($produto->iva->percentagem / 100);
+        $linhaCarrinho->valorComIva = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
+        $linhaCarrinho->subtotal = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
+        $linhaCarrinho->save();
+
 
         // Atualiza os totais do carrinho
         $carrinho->quantidade += 1;
