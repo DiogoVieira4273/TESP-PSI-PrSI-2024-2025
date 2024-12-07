@@ -46,6 +46,12 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user',
+                    //'except' => ['create', 'update', 'delete'],
+                    'extraPatterns' => [
+                        'POST user' => 'criaruser',
+                    ],
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/produto',
                     'extraPatterns' => [
                         'GET count' => 'count',
