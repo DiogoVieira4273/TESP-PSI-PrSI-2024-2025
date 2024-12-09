@@ -2,11 +2,22 @@
 
 namespace backend\modules\api\controllers;
 
+use backend\modules\api\components\CustomAuth;
 use yii\rest\ActiveController;
 
 class ProdutoController extends ActiveController
 {
     public $modelClass = 'common\models\Produto';
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => CustomAuth::className(),
+        ];
+
+        return $behaviors;
+    }
 
     public function actionCount()
     {
@@ -41,16 +52,16 @@ class ProdutoController extends ActiveController
             ->all();
 
         if (empty($produtos)) {
-         return [
-             'status' => 'error',
-             'message' => 'Nenhum produto encontrado com o ID de tamanho especificado.'
-         ];
+            return [
+                'status' => 'error',
+                'message' => 'Nenhum produto encontrado com o ID de tamanho especificado.'
+            ];
         }
 
         return [
             'status' => 'success',
             'data' => $produtos
-            ];
+        ];
     }
 
     public function actionBuscarpormarca($marca_id)
@@ -58,7 +69,7 @@ class ProdutoController extends ActiveController
         $produtosmodel = new $this->modelClass;
         $produtos = $produtosmodel::find()->where(['marca_id' => $marca_id])->all();
 
-        if(empty($produtos)) {
+        if (empty($produtos)) {
             return ['message' => 'Nenhum produto encontrado com o ID de marca especificado.'];
         }
 
@@ -70,7 +81,7 @@ class ProdutoController extends ActiveController
         $produtosmodel = new $this->modelClass;
         $produtos = $produtosmodel::find()->where(['categoria_id' => $categoria_id])->all();
 
-        if(empty($produtos)) {
+        if (empty($produtos)) {
             return ['message' => 'Nenhum produto encontrado com o ID de categoria especificado.'];
         }
 
@@ -82,7 +93,7 @@ class ProdutoController extends ActiveController
         $produtosmodel = new $this->modelClass;
         $produtos = $produtosmodel::find()->where(['genero_id' => $genero_id])->all();
 
-        if(empty($produtos)) {
+        if (empty($produtos)) {
             return ['message' => 'Nenhum produto encontrado com o ID de genero especificado.'];
         }
 

@@ -92,7 +92,7 @@ class UserForm extends Model
 
             //se o registo do perfil foi concluído
             if ($profile->save()) {
-                return $user && $profile;
+                return true;
             }
         }
         //}
@@ -101,55 +101,34 @@ class UserForm extends Model
 
     public function update($id)
     {
-        //valida os dados do formulário - vista
-        if ($this->validate()) {
+        //seleciona o user a editar
+        $user = User::findOne(['id' => $id]);
 
-            //seleciona o user a editar
-            $user = User::findOne(['id' => $id]);
+        //altera os respetivos os dados do user a editar
+        $user->username = $this->username;
+        $user->email = $this->email;
 
-            //altera os respetivos os dados do user a editar
-            $user->username = $this->username;
-            $user->email = $this->email;
+        //se o campo da password não estiver vazia, edita a password
+        if ($this->password != null) {
+            $user->setPassword($this->password);
+        }
 
-            //se o campo da password não estiver vazia, edita a password
-            if ($this->password != null) {
-                $user->setPassword($this->password);
-            }
+        $user->generateAuthKey();
 
-            $user->generateAuthKey();
-            $user->status = $this->status;
+        //se a alteração dos dados do user foram gravados com sucesso
+        if ($user->save(false)) {
 
-            //se a alteração dos dados do user foram gravados com sucesso
-            if ($user->save(false)) {
+            //seleciona o perfil do user a editar
+            $profile = Profile::findOne(['user_id' => $user->id]);
 
-                //vai buscar a role do user a editar
-                $roleUser = key(Yii::$app->authManager->getRolesByUser($user->id)); // Obtém a role atual associada ao usuário
+            //altera os respetivos os dados do perfil do user a editar
+            $profile->nif = $this->nif;
+            $profile->morada = $this->morada;
+            $profile->telefone = $this->telefone;
 
-                //verifica se o campo da role foi alterada
-                if ($roleUser != $this->role) {
-                    // Se a role foi alterada, atribui a nova role
-
-                    //remove a role antiga
-                    $auth = Yii::$app->authManager;
-                    $auth->revoke($auth->getRole($roleUser), $user->id);
-
-                    //atribui a nova role
-                    $role = $auth->getRole($this->role);
-                    $auth->assign($role, $user->id);
-                }
-
-                //seleciona o perfil do user a editar
-                $profile = Profile::findOne(['user_id' => $user->id]);
-
-                //altera os respetivos os dados do perfil do user a editar
-                $profile->nif = $this->nif;
-                $profile->morada = $this->morada;
-                $profile->telefone = $this->telefone;
-
-                //se o registo do perfil foi concluído
-                if ($profile->save()) {
-                    return true;
-                }
+            //se o registo do perfil foi concluído
+            if ($profile->save()) {
+                return true;
             }
         }
         return null;

@@ -2,11 +2,22 @@
 
 namespace backend\modules\api\controllers;
 
+use backend\modules\api\components\CustomAuth;
 use yii\rest\ActiveController;
 
 class FavoritoController extends ActiveController
 {
     public $modelClass = 'common\models\Favorito';
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => CustomAuth::className(),
+        ];
+
+        return $behaviors;
+    }
 
     public function actionCount()
     {
@@ -22,7 +33,6 @@ class FavoritoController extends ActiveController
         $produtos = $favoritosmodel::find()->all();
         return ['produtos' => $produtos];
     }
-
 
 
 }
