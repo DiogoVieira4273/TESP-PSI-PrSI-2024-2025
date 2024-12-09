@@ -65,9 +65,6 @@ class UserController extends ActiveController
         //instancia o UserForm
         $model = new UserForm();
 
-        //definir o cenário de criação
-        $model->scenario = UserForm::SCENARIO_CREATE;
-
         $request = Yii::$app->request;
 
         $username = $request->getBodyParam('username');
@@ -82,6 +79,28 @@ class UserController extends ActiveController
         }
 
         return 'Falha na criação de um novo cliente';
+
+    }
+
+    public function actionAtualizaruser()
+    {
+        //instancia o UserForm
+        $model = new UserForm();
+
+        $request = Yii::$app->request;
+
+        $username = $request->getBodyParam('username');
+        $email = $request->getBodyParam('email');
+        $password = $request->getBodyParam('password');
+        $nif = $request->getBodyParam('nif');
+        $morada = $request->getBodyParam('morada');
+        $telefone = $request->getBodyParam('telefone');
+
+        if ($model->update($username, $email, $password, $nif, $morada, $telefone)) {
+            return 'Cliente atualizado com sucesso!';
+        }
+
+        return 'Falha na atualização do cliente pretendido';
 
     }
 

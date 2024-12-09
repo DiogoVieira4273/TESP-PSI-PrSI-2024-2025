@@ -9,19 +9,8 @@ use common\models\Profile;
 
 class UserForm extends Model
 {
-    public $username;
-    public $email;
-    public $password;
-    public $role;
-    public $status;
-    public $nif;
-    public $morada;
-    public $telefone;
-
-    const SCENARIO_CREATE = 'create';
 
     public $modelClass = 'common\models\User';
-    public $modelPerfilClass = 'common\models\Profile';
 
     public function rules()
     {
@@ -30,39 +19,34 @@ class UserForm extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'O nome de utilizador já existe.', 'on' => self::SCENARIO_CREATE],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'O nome de utilizador já existe.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'O email já existe.', 'on' => self::SCENARIO_CREATE],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'O email já existe.'],
 
-            ['password', 'required', 'on' => self::SCENARIO_CREATE],
+            ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength'], 'message' => 'A senha deve ter no mínimo 12 caracteres.'],
             ['password', 'string', 'max' => Yii::$app->params['user.passwordMaxLength'], 'message' => 'A senha deve ter no máximo 16 caracteres.'],
             [['password'], 'match', 'pattern' => Yii::$app->params['user.passwordPattern'], 'message' => 'A senha deve conter pelo menos uma letra maiúscula, números e símbolos especiais.'],
 
-            ['role', 'required'],
-
             ['status', 'default', 'value' => 10],
 
             ['nif', 'required'],
-            ['nif', 'unique', 'targetClass' => '\common\models\Profile', 'message' => 'O nif inserido já existe.', 'on' => self::SCENARIO_CREATE],
+            ['nif', 'unique', 'targetClass' => '\common\models\Profile', 'message' => 'O nif inserido já existe.'],
 
             ['morada', 'required'],
 
             ['telefone', 'required'],
-            ['telefone', 'unique', 'targetClass' => '\common\models\Profile', 'message' => 'O telefone inserido já existe.', 'on' => self::SCENARIO_CREATE],
+            ['telefone', 'unique', 'targetClass' => '\common\models\Profile', 'message' => 'O telefone inserido já existe.'],
         ];
     }
 
     public function create($username, $email, $password, $nif, $morada, $telefone)
     {
-
-        //valida os dados do formulário - vista
-        //if ($this->validate()) {
         //cria um novo Utilizador
         $user = new User();
 
@@ -71,7 +55,6 @@ class UserForm extends Model
         $user->email = $email;
         $user->setPassword($password);
         $user->generateAuthKey();
-        //$user->status = $this->status;
 
         //se correu tudo bem ao gravar os dados do user
         if ($user->save(false)) {
@@ -95,22 +78,21 @@ class UserForm extends Model
                 return true;
             }
         }
-        //}
         return null;
     }
 
-    public function update($id)
+    public function update($username, $email, $password, $nif, $morada, $telefone)
     {
         //seleciona o user a editar
-        $user = User::findOne(['id' => $id]);
+        $user = User::findOne(['username' => $username]);
 
         //altera os respetivos os dados do user a editar
-        $user->username = $this->username;
-        $user->email = $this->email;
+        $user->username = $username;
+        $user->email = $email;
 
         //se o campo da password não estiver vazia, edita a password
-        if ($this->password != null) {
-            $user->setPassword($this->password);
+        if ($user->password != null) {
+            $user->setPassword($password);
         }
 
         $user->generateAuthKey();
@@ -122,9 +104,9 @@ class UserForm extends Model
             $profile = Profile::findOne(['user_id' => $user->id]);
 
             //altera os respetivos os dados do perfil do user a editar
-            $profile->nif = $this->nif;
-            $profile->morada = $this->morada;
-            $profile->telefone = $this->telefone;
+            $profile->nif = $nif;
+            $profile->morada = $morada;
+            $profile->telefone = $telefone;
 
             //se o registo do perfil foi concluído
             if ($profile->save()) {

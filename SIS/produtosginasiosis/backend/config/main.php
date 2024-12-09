@@ -51,7 +51,9 @@ return [
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user',
                     'extraPatterns' => [
-                        'POST criarusers' => 'criaruser',
+                        'POST login' => 'login',
+                        'POST criaruser' => 'criaruser',
+                        'POST atualizaruser' => 'atualizaruser',
                     ],
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/produto',
