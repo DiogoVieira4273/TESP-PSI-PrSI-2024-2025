@@ -55,6 +55,7 @@ return [
                         'POST criarusers' => 'criaruser',
                     ],
                 ],
+                
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/produto',
                     'extraPatterns' => [
                         'GET count' => 'count',
@@ -80,6 +81,36 @@ return [
                     'extraPatterns' => [
                         'GET count' => 'count',
                         'GET favoritos' => 'favoritos',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/categoria',
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET categorias' => 'categorias',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/tamanho',
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET tamanhos' => 'tamanhos',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/genero',
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET generos' => 'generos',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/iva',
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET ivas' => 'ivas',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/marca',
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET marcas' => 'marcas',
                     ],
                 ],
             ],
