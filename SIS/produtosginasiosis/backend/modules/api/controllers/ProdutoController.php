@@ -2,22 +2,11 @@
 
 namespace backend\modules\api\controllers;
 
-use yii\filters\auth\QueryParamAuth;
 use yii\rest\ActiveController;
 
 class ProdutoController extends ActiveController
 {
     public $modelClass = 'common\models\Produto';
-
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => QueryParamAuth::className(),
-            //'only' => ['login'],
-        ];
-        return $behaviors;
-    }
 
     public function actionCount()
     {
@@ -128,33 +117,4 @@ class ProdutoController extends ActiveController
         ];
     }
 
-    public function actionDetalhes($id)
-    {
-        $produtomodel = new $this->modelClass;
-
-        $produto = $produtomodel::find()->where(['id'=>$id])->one();
-
-        if (!$produto)
-        {
-            return [
-                'status' => 'error',
-                'message' => 'Nenhum produto encontrado.'
-            ];
-        }
-
-        $imagem = $produto->imagens->filename;
-
-        if (empty($imagem))
-        {
-            return [
-                'status' => 'error',
-                'message' => 'Nenhum imagem encontrada para o produto especificado.'
-            ];
-        }
-
-        return [
-            'status' => 'success',
-            'data' => $imagem
-        ];
-    }
 }

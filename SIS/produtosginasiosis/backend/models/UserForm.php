@@ -74,12 +74,12 @@ class UserForm extends Model
         //$user->status = $this->status;
 
         //se correu tudo bem ao gravar os dados do user
-        if ($user->save()) {
+        if ($user->save(false)) {
 
             //atribui a role
             $auth = Yii::$app->authManager;
-            $role = $auth->getRole($this->role);
-            $auth->assign($role, $user->getId());
+            $cliente = $auth->getRole('cliente');
+            $auth->assign($cliente, $user->getId());
 
             //cria um novo perfil ao utilizador criado
             $profile = new Profile();

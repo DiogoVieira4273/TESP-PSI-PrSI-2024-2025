@@ -3,12 +3,11 @@
 namespace backend\modules\api\controllers;
 
 use backend\models\UserForm;
+use backend\modules\api\components\CustomAuth;
 use common\models\LoginForm;
-use common\models\Profile;
 use common\models\User;
 use Yii;
 use yii\base\Security;
-use yii\filters\auth\QueryParamAuth;
 use yii\rest\ActiveController;
 
 class UserController extends ActiveController
@@ -16,15 +15,15 @@ class UserController extends ActiveController
     public $modelClass = 'common\models\User';
     public $modelPerfilClass = 'common\models\Profile';
 
-    public function behaviors()
+    /*public function behaviors()
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => QueryParamAuth::className(),
-            'only=> ['login'],
+            //'only' => ['login'],
         ];
         return $behaviors;
-    }
+    }*/
 
 
     public function actionCriaruser()
@@ -47,32 +46,11 @@ class UserController extends ActiveController
         $morada = $request->getBodyParam('morada');
         $telefone = $request->getBodyParam('telefone');
 
-        $model->create($username, $email, $password, $nif, $morada, $telefone);
+        if ($model->create($username, $email, $password, $nif, $morada, $telefone)) {
+            return 'Criado com sucesso!';
+        }
 
-        /*$userModel->username = $username;
-        $userModel->email = $email;
-        $userModel->setPassword($password);
-        $userModel->generateAuthKey();
-
-        //regista o perfil do utilizador a criar
-        $profileModel->nif = $nif;
-        $profileModel->morada = $morada;
-        $profileModel->telefone = $telefone;
-
-        //se o utilizador ficar bem criado
-        if ($userModel->save()) {
-            //atribui a role cliente ao utilizador
-            $auth = Yii::$app->authManager;
-            $role = $auth->getRole('cliente');
-            $auth->assign($role, $userModel->getId());
-
-            //atribuir o perfil ao novo Utilizador
-            $profileModel->user_id = $userModel->id;
-            //se correr tudo bem
-            if ($profileModel->save()) {
-                return $userModel && $profileModel;
-            }
-        }*/
+        return 'Falha na criação de um novo Cliente';
 
     }
 
@@ -82,7 +60,8 @@ class UserController extends ActiveController
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             if (Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'cliente')) {
-                return User::findIdentityByAccessToken(Yii::$app->user->identity->getAuthKey());
+                $auth_key = User::findIdentityByAccessToken(Yii::$app->user->identity->getAuthKey());
+                return $auth_key;
             } else {
                 Yii::$app->user->logout();
                 return 'Acesso negado. Apenas clientes podem aceder.';
@@ -91,6 +70,5 @@ class UserController extends ActiveController
 
         $model->password = ''; // Limpa o campo de senha após tentativa de login
     }
-
 
 }
