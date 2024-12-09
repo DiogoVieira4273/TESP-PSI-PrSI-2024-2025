@@ -66,6 +66,7 @@ return [
                         'GET buscarporcategoria/{categoria_id}' => 'buscarporcategoria',
                         'GET buscarporgenero/{genero_id}' => 'buscarporgenero',
                         'GET imagens/{produto_id}' => 'imagens',
+                        'GET detalhes/{id}' => 'detalhes',
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\d+>',

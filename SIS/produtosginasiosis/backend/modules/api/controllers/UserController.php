@@ -21,7 +21,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => QueryParamAuth::className(),
-            'only' => ['login'],
+            'only=> ['login'],
         ];
         return $behaviors;
     }

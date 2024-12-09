@@ -52,16 +52,16 @@ class ProdutoController extends ActiveController
             ->all();
 
         if (empty($produtos)) {
-            return [
-                'status' => 'error',
-                'message' => 'Nenhum produto encontrado com o ID de tamanho especificado.'
-            ];
+         return [
+             'status' => 'error',
+             'message' => 'Nenhum produto encontrado com o ID de tamanho especificado.'
+         ];
         }
 
         return [
             'status' => 'success',
             'data' => $produtos
-        ];
+            ];
     }
 
     public function actionBuscarpormarca($marca_id)
@@ -69,7 +69,7 @@ class ProdutoController extends ActiveController
         $produtosmodel = new $this->modelClass;
         $produtos = $produtosmodel::find()->where(['marca_id' => $marca_id])->all();
 
-        if (empty($produtos)) {
+        if(empty($produtos)) {
             return ['message' => 'Nenhum produto encontrado com o ID de marca especificado.'];
         }
 
@@ -81,7 +81,7 @@ class ProdutoController extends ActiveController
         $produtosmodel = new $this->modelClass;
         $produtos = $produtosmodel::find()->where(['categoria_id' => $categoria_id])->all();
 
-        if (empty($produtos)) {
+        if(empty($produtos)) {
             return ['message' => 'Nenhum produto encontrado com o ID de categoria especificado.'];
         }
 
@@ -93,7 +93,7 @@ class ProdutoController extends ActiveController
         $produtosmodel = new $this->modelClass;
         $produtos = $produtosmodel::find()->where(['genero_id' => $genero_id])->all();
 
-        if (empty($produtos)) {
+        if(empty($produtos)) {
             return ['message' => 'Nenhum produto encontrado com o ID de genero especificado.'];
         }
 
@@ -128,4 +128,33 @@ class ProdutoController extends ActiveController
         ];
     }
 
+    public function actionDetalhes($id)
+    {
+        $produtomodel = new $this->modelClass;
+
+        $produto = $produtomodel::find()->where(['id'=>$id])->one();
+
+        if (!$produto)
+        {
+            return [
+                'status' => 'error',
+                'message' => 'Nenhum produto encontrado.'
+            ];
+        }
+
+        $imagem = $produto->imagens->filename;
+
+        if (empty($imagem))
+        {
+            return [
+                'status' => 'error',
+                'message' => 'Nenhum imagem encontrada para o produto especificado.'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'data' => $imagem
+        ];
+    }
 }
