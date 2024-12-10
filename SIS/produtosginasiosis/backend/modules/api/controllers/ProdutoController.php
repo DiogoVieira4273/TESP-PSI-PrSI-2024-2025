@@ -128,4 +128,28 @@ class ProdutoController extends ActiveController
         ];
     }
 
+    public function actionDetalhes($id)
+    {
+        $produtomodel = new $this->modelClass;
+        $produto = $produtomodel::find()->where(['id'=>$id])->one();
+        if (!$produto)
+        {
+            return [
+                'status' => 'error',
+                'message' => 'Nenhum produto encontrado.'
+            ];
+        }
+        $imagem = $produto->imagens->filename;
+        if (empty($imagem))
+        {
+            return [
+                'status' => 'error',
+                'message' => 'Nenhum imagem encontrada para o produto especificado.'
+            ];
+        }
+        return [
+            'status' => 'success',
+            'data' => $imagem
+        ];
+    }
 }

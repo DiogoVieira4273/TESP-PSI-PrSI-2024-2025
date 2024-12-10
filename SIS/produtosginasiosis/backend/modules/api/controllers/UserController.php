@@ -10,6 +10,7 @@ use yii\rest\ActiveController;
 class UserController extends ActiveController
 {
     public $modelClass = 'common\models\User';
+    public $modelProfileClass = 'common\models\Profile';
 
     public function behaviors()
     {
@@ -104,4 +105,16 @@ class UserController extends ActiveController
 
     }
 
+    public function actionDadosUserProfile($userID)
+    {
+        $userModel = new $this->modelClass;
+
+        $user = $userModel::find()->where(['id' => $userID])->one();
+
+        $profileModel = new $this->modelProfileClass;
+
+        $profile = $profileModel::find()->where(['user_id' => $userID])->one();
+
+        return $user && $profile;
+    }
 }
