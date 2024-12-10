@@ -34,6 +34,13 @@
                     ['label' => 'Métodos de Entrega', 'icon' => 'fa fa-truck', 'url' => ['/metodoentrega/index']],
                     ['label' => 'Métodos de Pagamento', 'icon' => '', 'header' => true],
                     ['label' => 'Métodos de Pagamento', 'icon' => 'fa fa-credit-card', 'url' => ['/metodopagamento/index']],
+                    ['label' => 'Vendas', 'header' => true],
+                    [
+                        'label' => 'Vendas',
+                        'items' => [
+                            ['label' => 'Realizar Venda', 'icon' => 'fa fa-cart-plus', 'url' => ['/realizarvenda/index']],
+                        ],
+                    ],
                     ['label' => 'Mercadoria', 'header' => true],
                     [
                         'label' => 'Mercadoria',
