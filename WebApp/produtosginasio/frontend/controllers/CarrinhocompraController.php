@@ -40,8 +40,10 @@ class CarrinhocompraController extends Controller
      */
     public function actionIndex()
     {
-        // Obter o perfil do usuário (supondo que o perfil esteja vinculado ao usuário logado)
+        // Obter o ID do usuário logado
         $user_id = Yii::$app->user->identity->id;
+
+        // Obter o perfil associado ao usuário
         $profile = \common\models\Profile::findOne(['user_id' => $user_id]);
 
         if (!$profile) {
@@ -52,11 +54,7 @@ class CarrinhocompraController extends Controller
         $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
 
         if (!$carrinho) {
-            $carrinho = new Carrinhocompra();
-            $carrinho->profile_id = $profile->id;
-            $carrinho->quantidade = 0;
-            $carrinho->valorTotal = 0.00;
-            $carrinho->save();
+            throw new NotFoundHttpException('Carrinho de compras não encontrado.');
         }
 
         // Obter as linhas do carrinho
@@ -99,19 +97,13 @@ class CarrinhocompraController extends Controller
 
         $user_id = Yii::$app->user->identity->id;
         $profile = \common\models\Profile::findOne(['user_id' => $user_id]);
-
         if (!$profile) {
             throw new NotFoundHttpException('Perfil não encontrado.');
         }
 
         $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
-
         if (!$carrinho) {
-            $carrinho = new Carrinhocompra();
-            $carrinho->profile_id = $profile->id;
-            $carrinho->quantidade = 0;
-            $carrinho->valorTotal = 0.00;
-            $carrinho->save();
+            throw new NotFoundHttpException('Carrinho de compras não encontrado.');
         }
 
         // Busca o produto a ser adicionado
@@ -125,30 +117,13 @@ class CarrinhocompraController extends Controller
             'produto_id' => $produto_id,
         ]);
 
-        /*if ($linhaCarrinho) {
-            // Se o produto já estiver no carrinho, apenas aumenta a quantidade
-            $linhaCarrinho->quantidade += 1;
-            $linhaCarrinho->subtotal += $linhaCarrinho->precoUnit;
-            $linhaCarrinho->save();
-        } else {
-            // Adiciona um novo item ao carrinho
-            $linhaCarrinho = new Linhacarrinho();
-            $linhaCarrinho->carrinhocompras_id = $carrinho->id;
-            $linhaCarrinho->produto_id = $produto_id;
-            $linhaCarrinho->quantidade = 1;
-            $linhaCarrinho->precoUnit = $produto->preco;
-            $linhaCarrinho->valorIva = $produto->preco * ($produto->iva->percentagem / 100);
-            $linhaCarrinho->valorComIva = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
-            $linhaCarrinho->subtotal = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
-            $linhaCarrinho->save();
-        }*/
         if ($linhaCarrinho) {
             // Se o produto já estiver no carrinho, redireciona com mensagem de aviso
             Yii::$app->session->setFlash('warning', 'Este produto já está no seu carrinho.');
             return $this->redirect(['index']);
         }
 
-// Adiciona um novo item ao carrinho
+        // Adiciona um novo item ao carrinho
         $linhaCarrinho = new Linhacarrinho();
         $linhaCarrinho->carrinhocompras_id = $carrinho->id;
         $linhaCarrinho->produto_id = $produto_id;
