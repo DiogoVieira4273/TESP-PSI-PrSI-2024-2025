@@ -46,13 +46,12 @@ $this->title = $model->nomeProduto;
             <p><label>Categoria: <?= Html::encode($model->categoria->nomeCategoria) ?></label></p>
             <p><label>Iva: <?= Html::encode($model->iva->percentagem * 100) ?>%</label></p>
             <p><label>Género: <?= Html::encode($model->genero->referencia) ?></label></p>
-            <?php foreach ($model->tamanhos as $tamanho): ?>
-                <hr>
-                <p>Tamanhos disponíveis: </p>
-                <p>
+            <p>Tamanhos disponíveis:</p>
+            <div class="tamanhos-container">
+                <?php foreach ($model->tamanhos as $tamanho): ?>
                     <button><?= Html::encode($tamanho->referencia) ?></button>
-                </p>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
 
             <a href="<?= Url::to(['carrinhocompra/create', 'produto_id' => $model->id]) ?>"class="ms-3">
                 <i class="fa fa-cart-plus" aria-hidden="true" style="color: white;"></i>
