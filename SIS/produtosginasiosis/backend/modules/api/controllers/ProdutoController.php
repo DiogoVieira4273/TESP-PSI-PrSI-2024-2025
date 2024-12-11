@@ -131,7 +131,7 @@ class ProdutoController extends ActiveController
     public function actionDetalhes($id)
     {
         $produtomodel = new $this->modelClass;
-        $produto = $produtomodel::find()->where(['id'=>$id])->one();
+        $produto = $produtomodel::findOne(['id' => $id]);
         if (!$produto)
         {
             return [

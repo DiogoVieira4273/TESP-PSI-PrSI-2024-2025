@@ -54,19 +54,8 @@ return [
                         'POST login' => 'login',
                         'POST criaruser' => 'criaruser',
                         'POST atualizaruser' => 'atualizaruser',
-                        'GET dadosuserprofile/{id}' => 'dadosuserprofile',
+                        'GET dadosuserprofile' => 'dadosuserprofile',
                     ],
-                    'tokens' => [
-                        '{id}' => '<id:\\d+>',
-                    ]
-                ],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/profile',
-                    'extraPatterns' => [
-                        'GET profile/{user_id}' => 'profile',
-                    ],
-                    'tokens' => [
-                        '{user_id}' => '<user_id:\\d+>',
-                    ]
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/produto',
                     'extraPatterns' => [
