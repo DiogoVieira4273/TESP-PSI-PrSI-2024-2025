@@ -131,25 +131,25 @@ class ProdutoController extends ActiveController
     public function actionDetalhes($id)
     {
         $produtomodel = new $this->modelClass;
-        $produto = $produtomodel::findOne(['id' => $id]);
-        if (!$produto)
-        {
+        //$produto = $produtomodel::findOne(['id' => $id]);
+        $produto = $produtomodel::find()->with('imagens')->where(['id' => $id])->one();
+        if (!$produto) {
             return [
                 'status' => 'error',
                 'message' => 'Nenhum produto encontrado.'
             ];
         }
-        $imagem = $produto->imagens->filename;
-        if (empty($imagem))
-        {
-            return [
-                'status' => 'error',
-                'message' => 'Nenhum imagem encontrada para o produto especificado.'
-            ];
+        if ($produto) {
+            $imagens = $produto->imagens;
+            foreach ($imagens as $imagem) {
+                //
+            }
         }
+
         return [
             'status' => 'success',
-            'data' => $imagem
+            'data' => $produto,
+            'images' => $imagens
         ];
     }
 }
