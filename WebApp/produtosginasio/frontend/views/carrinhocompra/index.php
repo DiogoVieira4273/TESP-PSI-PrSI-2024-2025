@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <p><strong>Quantidade Total:</strong> <?= Html::encode($carrinho->quantidade) ?></p>
                         <div class="cart-actions">
                             <!-- Botões de finalização do carrinho -->
-                            <a href="<?= Url::to(['pedido/criar', 'carrinho_id' => $carrinho->id]) ?>" class="btn btn-success">Finalizar Compra</a>
+                            <a href="<?= Url::to(['finalizarcompra/index', 'carrinho_id' => $carrinho->id]) ?>" class="btn btn-success">Finalizar Compra</a>
                         </div>
                     </div>
                 </div>
