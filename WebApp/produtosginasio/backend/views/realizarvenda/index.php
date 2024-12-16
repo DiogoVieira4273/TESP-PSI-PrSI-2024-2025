@@ -148,48 +148,51 @@ foreach (Yii::$app->session->getAllFlashes() as $type => $message) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-4"><h4>Resumo do Carrinho</h4>
-                <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+            <div class="col-md-4">
+                <h4>Resumo do Carrinho</h4>
+                <div class="table-responsive">
+                    <?= GridView::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
 
-                        'nomeProduto',
-                        'tamanho',
-                        [
-                            'attribute' => 'quantidade',
-                            'format' => 'raw',
-                            'value' => function ($model) {
-                                return Html::beginForm(['realizarvenda/editarquantidade'], 'post') .
-                                    Html::hiddenInput('id', $model['id']) .
-                                    Html::hiddenInput('tamanho', $model['tamanho']) .
-                                    Html::input('number', 'quantidade', $model['quantidade'], ['min' => 1]) .
-                                    Html::submitButton('Atualizar', ['class' => 'btn btn-primary']) .
-                                    Html::endForm();
-                            },
-                        ],
-                        [
-                            'attribute' => 'preco',
-                            'format' => 'raw',
-                            'value' => function ($model) {
-                                return number_format($model['preco'], 2, ',', '.') . ' €';
-                            },
-                        ],
-                        [
-                            'class' => 'yii\grid\ActionColumn',
-                            'template' => '{delete}',
-                            'buttons' => [
-                                'delete' => function ($url, $model, $key) {
-                                    return Html::a('<i class="fa fa-trash"></i>', Url::to(['realizarvenda/removerproduto', 'id' => $model['id'], 'tamanho' => $model['tamanho']]), [
-                                        'class' => 'btn btn-danger btn-sm',
-                                        'data-confirm' => 'Tem certeza que deseja remover este produto?',
-                                        'data-method' => 'post',
-                                    ]);
+                            'nomeProduto',
+                            'tamanho',
+                            [
+                                'attribute' => 'quantidade',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return Html::beginForm(['realizarvenda/editarquantidade'], 'post') .
+                                        Html::hiddenInput('id', $model['id']) .
+                                        Html::hiddenInput('tamanho', $model['tamanho']) .
+                                        Html::input('number', 'quantidade', $model['quantidade'], ['min' => 1]) .
+                                        Html::submitButton('Atualizar', ['class' => 'btn btn-primary']) .
+                                        Html::endForm();
                                 },
                             ],
+                            [
+                                'attribute' => 'preco',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return number_format($model['preco'], 2, ',', '.') . ' €';
+                                },
+                            ],
+                            [
+                                'class' => 'yii\grid\ActionColumn',
+                                'template' => '{delete}',
+                                'buttons' => [
+                                    'delete' => function ($url, $model, $key) {
+                                        return Html::a('<i class="fa fa-trash"></i>', Url::to(['realizarvenda/removerproduto', 'id' => $model['id'], 'tamanho' => $model['tamanho']]), [
+                                            'class' => 'btn btn-danger btn-sm',
+                                            'data-confirm' => 'Tem certeza que deseja remover este produto?',
+                                            'data-method' => 'post',
+                                        ]);
+                                    },
+                                ],
+                            ],
                         ],
-                    ],
-                ]); ?>
+                    ]); ?>
+                </div>
                 <?php if (!empty($carrinho)): ?>
                     <?= Html::a('Finalizar Compra', ['compra'], [
                         'class' => 'btn btn-success',

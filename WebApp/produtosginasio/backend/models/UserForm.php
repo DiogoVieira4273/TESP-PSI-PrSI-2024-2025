@@ -89,11 +89,8 @@ class UserForm extends Model
 
                 //se o registo do perfil foi concluído
                 if ($profile->save()) {
-                    //$userId = $user->id;
-                    $authManager = Yii::$app->authManager;
-                    $userRoles = $authManager->getRolesByUser($user->id);
 
-                    if (isset($userRoles['cliente'])) {
+                    if ($this->role == 'cliente') {
                         $carrinhoCompras = new Carrinhocompra();
                         $carrinhoCompras->quantidade = 0;
                         $carrinhoCompras->valorTotal = 0.00;
