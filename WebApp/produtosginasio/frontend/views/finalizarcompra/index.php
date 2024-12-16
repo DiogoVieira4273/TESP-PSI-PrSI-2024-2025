@@ -9,6 +9,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="finalizar-compra container mt-4">
     <h1><?= Html::encode($this->title) ?></h1>
+
     <!-- Exibir flash message de sucesso -->
     <?php if (Yii::$app->session->hasFlash('success')): ?>
         <div class="alert alert-success">
@@ -66,9 +67,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'prompt' => 'Selecione um método de entrega',
                             'class' => 'form-control',
-                            'onchange' => 'this.form.submit()',
                         ]
                     ) ?>
+                    <button type="submit" class="btn btn-primary mt-2">Aplicar Método de Entrega</button>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>
@@ -79,39 +80,50 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h4 class="mb-0">Escolha o Método de Pagamento</h4>
                 </div>
                 <div class="card-body">
-                    <?= Html::dropDownList('metodo_pagamento', null,
+                    <?php $formPagamento = ActiveForm::begin(['action' => ['finalizarcompra/index', 'carrinho_id' => $carrinho->id], 'method' => 'post']); ?>
+                    <?= Html::hiddenInput('cupao', $cupao ? $cupao->codigo : null) ?>
+                    <?= Html::hiddenInput('metodo_entrega', Yii::$app->request->post('metodo_entrega') ?? null) ?>
+
+                    <?= Html::dropDownList('metodo_pagamento', Yii::$app->request->post('metodo_pagamento') ?? null,
                         \yii\helpers\ArrayHelper::map($metodosPagamento, 'id', 'metodoPagamento'),
                         [
                             'prompt' => 'Selecione um método de pagamento',
                             'class' => 'form-control',
-                            'id' => 'metodo-pagamento',  // Atribuindo um id para controle via JS
-                            'onchange' => 'mostrarFormularioPagamento()'  // Chamando a função JS ao mudar
+                            'onchange' => 'this.form.submit()'  // Envia o formulário quando a seleção mudar
                         ]
                     ) ?>
 
-                    <!-- Formulário para dados do cartão ou outros dados de pagamento -->
-                    <div id="dados-pagamento" style="display:none; margin-top: 20px;">
-                        <div id="cartao-formulario" style="display:none;">
+                    <?php
+                    // Exibir os formulários de pagamento com base na escolha do método de pagamento
+                    $metodoPagamentoSelecionado = Yii::$app->request->post('metodo_pagamento');
+                    ?>
+
+                    <?php if ($metodoPagamentoSelecionado == '1'): ?>
+                        <!-- Formulário para PayPal -->
+                        <div id="paypal-formulario" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label for="email_paypal">E-mail do PayPal:</label>
+                                <input type="email" class="form-control" name="email_paypal" placeholder="Digite seu e-mail do PayPal" required>
+                            </div>
+                        </div>
+                    <?php elseif ($metodoPagamentoSelecionado == '2'): ?>
+                        <!-- Formulário para Cartão de Crédito -->
+                        <div id="cartao-formulario" style="margin-top: 20px;">
                             <div class="form-group">
                                 <label for="numero_cartao">Número do Cartão:</label>
-                                <input type="text" class="form-control" id="numero_cartao" placeholder="Digite o número do cartão">
+                                <input type="text" class="form-control" name="numero_cartao" placeholder="Digite o número do cartão" required>
                             </div>
                             <div class="form-group">
                                 <label for="data_validade">Data de Validade:</label>
-                                <input type="month" class="form-control" id="data_validade">
+                                <input type="month" class="form-control" name="data_validade" required>
                             </div>
                             <div class="form-group">
                                 <label for="codigo_seguranca">Código de Segurança (CVV):</label>
-                                <input type="text" class="form-control" id="codigo_seguranca" placeholder="Digite o código CVV">
+                                <input type="text" class="form-control" name="codigo_seguranca" placeholder="Digite o código CVV" required>
                             </div>
                         </div>
-                        <div id="paypal-formulario" style="display:none;">
-                            <div class="form-group">
-                                <label for="email_paypal">E-mail do PayPal:</label>
-                                <input type="email" class="form-control" id="email_paypal" placeholder="Digite seu e-mail do PayPal">
-                            </div>
-                        </div>
-                    </div>
+                    <?php endif; ?>
+                    <?php ActiveForm::end(); ?>
                 </div>
             </div>
         </div>
@@ -139,39 +151,3 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-
-<script>
-    // Função JavaScript que mostra ou esconde o formulário de pagamento
-    function mostrarFormularioPagamento() {
-        var metodoPagamento = document.getElementById('metodo-pagamento').value;
-        var formularioPagamento = document.getElementById('dados-pagamento');
-        var cartaoFormulario = document.getElementById('cartao-formulario');
-        var paypalFormulario = document.getElementById('paypal-formulario');
-
-        // Esconde todos os formulários inicialmente
-        cartaoFormulario.style.display = 'none';
-        paypalFormulario.style.display = 'none';
-
-        // Exibe o formulário de pagamento apenas se um método de pagamento específico for selecionado
-        if (metodoPagamento) {
-            formularioPagamento.style.display = 'block';  // Exibe a secção de dados de pagamento
-
-            // Exibir o formulário correto com base no método de pagamento selecionado
-            if (metodoPagamento === '1') {
-                paypalFormulario.style.display = 'block';  // Exibe formulário para PayPal
-            } else if (metodoPagamento === '2') {
-                cartaoFormulario.style.display = 'block';  // Exibe formulário para Cartão de Crédito
-            }
-        } else {
-            formularioPagamento.style.display = 'none';  // Esconde a secção de dados de pagamento
-        }
-    }
-</script>
-
-
-
-
-
-
-
-
