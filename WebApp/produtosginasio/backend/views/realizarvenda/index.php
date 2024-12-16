@@ -107,24 +107,39 @@ foreach (Yii::$app->session->getAllFlashes() as $type => $message) {
                                         $selectedTamanho = $_GET['tamanho_referencia'] ?? $produto->produtosHasTamanhos[0]->tamanho->referencia;
                                         $quantidadeMax = $quantidadesMax[$selectedTamanho] ?? 0; ?>
                                         <form action="<?= Url::to(['realizarvenda/adicionarproduto']) ?>" method="GET">
-                                            <label for="tamanho_referencia">Tamanho:</label> <select
-                                                    name="tamanho_referencia"
+                                            <label for="tamanho_referencia">Tamanho:</label>
+                                            <select name="tamanho_referencia"
                                                     id="tamanho_referencia_<?= $produto->id ?>"
-                                                    onchange="atualizaQuantidade(<?= $produto->id ?>)"> <?php foreach ($produto->produtosHasTamanhos as $produtosHasTamanho): ?>
+                                                    onchange="atualizaQuantidade(<?= $produto->id ?>)">
+                                                <?php foreach ($produto->produtosHasTamanhos as $produtosHasTamanho): ?>
                                                     <option value="<?= $produtosHasTamanho->tamanho->referencia ?>" <?= $selectedTamanho == $produtosHasTamanho->tamanho->referencia ? 'selected' : '' ?>> <?= Html::encode($produtosHasTamanho->tamanho->referencia) ?> </option> <?php endforeach; ?>
-                                            </select> <label for="quantidade">Quantidade:</label> <select
-                                                    name="quantidade" id="quantidade_<?= $produto->id ?>">
-                                                <!-- A quantidade do produto vai ser apresentada consoante --> </select>
+                                            </select> <label for="quantidade">Quantidade:</label>
+                                            <select name="quantidade" id="quantidade_<?= $produto->id ?>">
+                                                <!-- A quantidade do produto vai ser apresentada consoante -->
+                                            </select>
                                             <input type="hidden" name="produto_id" value="<?= $produto->id ?>"/>
                                             <button type="submit" id="adicionar_button_<?= $produto->id ?>"
                                                     class="btn btn-success"> Adicionar
                                             </button>
                                         </form> <?php else: ?>
                                         <hr>
-                                        <form action="<?= Url::to(['realizarvenda/adicionarproduto']) ?>"><input
-                                                    type="hidden" name="produto_id" value="<?= $produto->id ?>"/>
-                                            <input type="hidden" name="quantidade"/>
-                                            <button type="submit" class="btn btn-success">Adicionar</button>
+                                        <form action="<?= Url::to(['realizarvenda/adicionarproduto']) ?>" method="GET">
+                                            <input type="hidden" name="produto_id" value="<?= $produto->id ?>"/>
+                                            <select name="quantidade" id="quantidade_<?= $produto->id ?>">
+                                                <?php
+                                                $min = 1;
+                                                $max = $produto->quantidade;
+
+                                                //gerar as opções dentro do intervalo
+                                                for ($i = $min; $i <= $max; $i++) {
+                                                    echo "<option value='$i'>$i</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <button type="submit"
+                                                    class="btn btn-success" <?= ($produto->quantidade == 0) ? 'disabled' : '' ?>>
+                                                Adicionar
+                                            </button>
                                         </form>
                                     <?php endif; ?>
                                 </div>
@@ -175,7 +190,11 @@ foreach (Yii::$app->session->getAllFlashes() as $type => $message) {
                         ],
                     ],
                 ]); ?>
-
+                <?php if (!empty($carrinho)): ?>
+                    <?= Html::a('Finalizar Compra', ['compra'], [
+                        'class' => 'btn btn-success',
+                    ]) ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>

@@ -2,13 +2,25 @@
 
 namespace backend\controllers;
 
+use common\models\Cupaodesconto;
+use common\models\Encomenda;
+use common\models\Fatura;
+use common\models\Linhafatura;
+use common\models\Metodoentrega;
+use common\models\Metodopagamento;
 use common\models\Produto;
 use common\models\ProdutosHasTamanho;
+use common\models\Profile;
 use common\models\Tamanho;
+use common\models\User;
+use common\models\Usocupao;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use function Symfony\Component\String\s;
 
 class RealizarvendaController extends Controller
 {
@@ -22,10 +34,10 @@ class RealizarvendaController extends Controller
             [
                 'access' => [
                     'class' => AccessControl::class,
-                    'only' => ['index', 'adicionarproduto'],
+                    'only' => ['index', 'adicionarproduto', 'editarquantidade', 'removerproduto'],
                     'rules' => [
                         [
-                            'actions' => ['index', 'adicionarproduto'],
+                            'actions' => ['index', 'adicionarproduto', 'editarquantidade', 'removerproduto'],
                             'allow' => true,
                             'roles' => ['admin', 'funcionario'],
                         ],
@@ -48,40 +60,11 @@ class RealizarvendaController extends Controller
         $carrinho = $session->get('carrinho', []);
         $produtos = Produto::find()->all();
 
-        //$produtos = Produto::find()->with('produtosHasTamanhos.tamanho')->all();
-
-        //para cada produto, obter o relacionamento de tamanhos
-        /*foreach ($produtos as $produto) {
-            // Obtemos os tamanhos e as quantidades associadas ao produto
-            $produto = $produto->getProdutosHasTamanhos()->all();
-        }*/
-
         return $this->render('index', [
             'produtos' => $produtos,
             'carrinho' => $carrinho,
         ]);
     }
-
-    /*public function actionObterQuantidadeMaxima()
-    {
-        $tamanhoReferencia = Yii::$app->request->get('tamanho_referencia');
-        $produtoId = Yii::$app->request->get('produto_id');
-
-        // Busque o produto pelo ID
-        $produto = Produto::findOne($produtoId);
-        $quantidadeMax = 0;
-
-        // Encontre a quantidade máxima para o tamanho selecionado
-        foreach ($produto->produtosHasTamanhos as $produtosHasTamanho) {
-            if ($produtosHasTamanho->tamanho->referencia === $tamanhoReferencia) {
-                $quantidadeMax = $produtosHasTamanho->quantidade;
-                break;
-            }
-        }
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return ['quantidadeMax' => $quantidadeMax];
-    }*/
 
 
     public function actionAdicionarproduto()
@@ -136,6 +119,45 @@ class RealizarvendaController extends Controller
         //atualiza o carrinho na sessão
         Yii::$app->session->set('carrinho', $carrinho);
 
+        //atualizar a quantidade na base dados
+        if ($tamanhoReferencia) {
+            $tamanho = Tamanho::findOne(['referencia' => $tamanhoReferencia]);
+            //produto com tamanho associado
+            $produtoTamanho = ProdutoshasTamanho::find()
+                ->where(['produto_id' => $produto_id, 'tamanho_id' => $tamanho->id])
+                ->one();
+
+            //verifica se existe o tamanho associado ao produto
+            if ($produtoTamanho) {
+                //verifica se há stock suficiente
+                if ($produtoTamanho->quantidade >= $quantidadeSelecionada) {
+                    //atualiza a quantidade no ProdutoshasTamanho
+                    $produtoTamanho->quantidade -= $quantidadeSelecionada;
+                    $produtoTamanho->save();
+
+                    //atualiza a quantidade total no produto
+                    $produto->quantidade -= $quantidadeSelecionada;
+                    $produto->save();
+                } else {
+                    Yii::$app->session->setFlash('error', 'Quantidade insuficiente para o tamanho selecionado.');
+                    return $this->redirect(['realizarvenda/index']);
+                }
+            } else {
+                Yii::$app->session->setFlash('error', 'Tamanho selecionado não disponível para este produto.');
+                return $this->redirect(['realizarvenda/index']);
+            }
+        } else {
+            //se for um produto sem tamanhos associados
+            if ($produto->quantidade >= $quantidadeSelecionada) {
+                // Atualiza a quantidade no produto
+                $produto->quantidade -= $quantidadeSelecionada;
+                $produto->save();
+            } else {
+                Yii::$app->session->setFlash('error', 'Quantidade insuficiente deste produto.');
+                return $this->redirect(['realizarvenda/index']);
+            }
+        }
+
         Yii::$app->session->setFlash('success', 'Produto adicionado ao carrinho com sucesso!');
         return $this->redirect(['realizarvenda/index']);
     }
@@ -152,13 +174,13 @@ class RealizarvendaController extends Controller
         }
 
         $produto_id = $_POST['id'];
-        $tamanho_referencia = isset($_POST['tamanho']) ? $_POST['tamanho'] : null;
+        $tamanho_referencia = isset($_POST['tamanho']) ? $_POST['tamanho'] : '';
         $quantidadeNova = intval($_POST['quantidade']);
 
         $carrinho = Yii::$app->session->get('carrinho', []);
 
         foreach ($carrinho as $key => $produtoCarrinho) {
-            if ($produtoCarrinho['id'] == $produto_id && $produtoCarrinho['tamanho'] == $tamanho_referencia) {
+            if ($produtoCarrinho['id'] == $produto_id && ($produtoCarrinho['tamanho'] == $tamanho_referencia || $tamanho_referencia === '')) {
                 $produto = Produto::findOne($produto_id);
 
                 if ($produto === null) {
@@ -166,82 +188,92 @@ class RealizarvendaController extends Controller
                     return $this->redirect(['realizarvenda/index']);
                 }
 
-                //converte a string da referência do tamanho para o tamanho_id
-                $tamanho_id = null;
-                if ($tamanho_referencia !== null) {
-                    $tamanho = Tamanho::find()->where(['referencia' => $tamanho_referencia])->one();
-                    if ($tamanho !== null) {
-                        $tamanho_id = $tamanho->id;
-                    } else {
-                        Yii::$app->session->setFlash('error', 'Tamanho não encontrado.');
-                        return $this->redirect(['realizarvenda/index']);
-                    }
-                }
+                if ($tamanho_referencia === '') {
+                    //vai buscar a quantidade que está guardada
+                    $quantidadeCarrinhoAntiga = $produtoCarrinho['quantidade'];
 
-                if ($quantidadeNova <= $produtoCarrinho['quantidade']) {
-                    //repõe a quantidade diminuída no stock
-                    if ($tamanho_id !== null) {
-                        $produtoTamanho = ProdutosHasTamanho::find()->where(['produto_id' => $produto_id, 'tamanho_id' => $tamanho_id])->one();
-                        if ($produtoTamanho) {
-                            $produtoTamanho->quantidade += ($produtoCarrinho['quantidade'] - $quantidadeNova);
-                            $produtoTamanho->save();
-                        }
-                    } else {
-                        $produto->quantidade += ($produtoCarrinho['quantidade'] - $quantidadeNova);
+                    if ($quantidadeNova <= $quantidadeCarrinhoAntiga) {
+                        //repõe a quantidade no stock do produto
+                        $produto->quantidade += ($quantidadeCarrinhoAntiga - $quantidadeNova);
                         $produto->save();
-                    }
-
-                    $carrinho[$key]['quantidade'] = $quantidadeNova;
-                    $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
-                } else {
-                    //reduz a quantidade aumentada no stock
-                    if ($tamanho_id !== null) {
-                        $produtoTamanho = ProdutosHasTamanho::find()->where(['produto_id' => $produto_id, 'tamanho_id' => $tamanho_id])->one();
-                        if ($produtoTamanho) {
-                            $quantidadeDisponivel = $produtoTamanho->quantidade;
-                            $quantidadeAtualNoCarrinho = $produtoCarrinho['quantidade'];
-                            $quantidadeMaximaDisponivel = $quantidadeDisponivel + $quantidadeAtualNoCarrinho;
-
-                            if ($quantidadeNova <= $quantidadeMaximaDisponivel) {
-                                $produtoTamanho->quantidade = $quantidadeDisponivel - ($quantidadeNova - $quantidadeAtualNoCarrinho);
-                                $produtoTamanho->save();
-
-                                $carrinho[$key]['quantidade'] = $quantidadeNova;
-                                $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
-                            } else {
-                                Yii::$app->session->setFlash('error', 'Quantidade indisponível em stock.');
-                                return $this->redirect(['realizarvenda/index']);
-                            }
-                        } else {
-                            Yii::$app->session->setFlash('error', 'Produto com tamanho não encontrado.');
-                            return $this->redirect(['realizarvenda/index']);
-                        }
                     } else {
+                        //verifica se há stock suficiente para aumentar a quantidade
                         $quantidadeDisponivel = $produto->quantidade;
-                        $quantidadeAtualNoCarrinho = $produtoCarrinho['quantidade'];
-                        $quantidadeMaximaDisponivel = $quantidadeDisponivel + $quantidadeAtualNoCarrinho;
+                        $quantidadeMaximaDisponivel = $quantidadeDisponivel + $quantidadeCarrinhoAntiga;
 
                         if ($quantidadeNova <= $quantidadeMaximaDisponivel) {
-                            $produto->quantidade = $quantidadeDisponivel - ($quantidadeNova - $quantidadeAtualNoCarrinho);
+                            //ajusta a quantidade do produto
+                            $produto->quantidade = $quantidadeDisponivel - ($quantidadeNova - $quantidadeCarrinhoAntiga);
                             $produto->save();
-
-                            $carrinho[$key]['quantidade'] = $quantidadeNova;
-                            $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
                         } else {
                             Yii::$app->session->setFlash('error', 'Quantidade indisponível em estoque.');
                             return $this->redirect(['realizarvenda/index']);
                         }
                     }
+
+                    //atualiza o carrinho
+                    $carrinho[$key]['quantidade'] = $quantidadeNova;
+                    $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
+                } else {
+                    //selecionar o id do tamanho
+                    $tamanho = Tamanho::find()->where(['referencia' => $tamanho_referencia])->one();
+                    if ($tamanho === null) {
+                        Yii::$app->session->setFlash('error', 'Tamanho não encontrado.');
+                        return $this->redirect(['realizarvenda/index']);
+                    }
+
+                    $tamanho_id = $tamanho->id;
+                    $produtoTamanho = ProdutosHasTamanho::find()->where(['produto_id' => $produto_id, 'tamanho_id' => $tamanho_id])->one();
+                    if ($produtoTamanho === null) {
+                        Yii::$app->session->setFlash('error', 'Produto com tamanho não encontrado.');
+                        return $this->redirect(['realizarvenda/index']);
+                    }
+
+                    $quantidadeCarrinhoAntiga = $produtoCarrinho['quantidade'];
+
+                    if ($quantidadeNova <= $quantidadeCarrinhoAntiga) {
+                        //repõe no stock do tamanho específico
+                        $produtoTamanho->quantidade += ($quantidadeCarrinhoAntiga - $quantidadeNova);
+                        $produtoTamanho->save();
+                    } else {
+                        //verifica se há stock suficiente para aumentar a quantidade
+                        $quantidadeDisponivel = $produtoTamanho->quantidade;
+                        $quantidadeMaximaDisponivel = $quantidadeDisponivel + $quantidadeCarrinhoAntiga;
+
+                        if ($quantidadeNova <= $quantidadeMaximaDisponivel) {
+                            //ajusta a quantidade no stock do tamanho
+                            $produtoTamanho->quantidade = $quantidadeDisponivel - ($quantidadeNova - $quantidadeCarrinhoAntiga);
+                            $produtoTamanho->save();
+                        } else {
+                            Yii::$app->session->setFlash('error', 'Quantidade indisponível em estoque.');
+                            return $this->redirect(['realizarvenda/index']);
+                        }
+                    }
+
+                    //recalcular a quantidade total do produto na tabela Produto
+                    $quantidadeTotal = 0;
+                    $produtoTamanhos = ProdutosHasTamanho::find()->where(['produto_id' => $produto_id])->all();
+                    foreach ($produtoTamanhos as $produtoTamanho) {
+                        $quantidadeTotal += $produtoTamanho->quantidade;
+                    }
+                    $produto->quantidade = $quantidadeTotal;  // Atualiza a quantidade total na tabela Produto
+
+                    $produto->save();
+
+                    //atualiza o carrinho
+                    $carrinho[$key]['quantidade'] = $quantidadeNova;
+                    $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
                 }
-                break;
+
+                //atualiza o carrinho na sessão
+                Yii::$app->session->set('carrinho', $carrinho);
+                return $this->redirect(['realizarvenda/index']);
             }
         }
 
-        Yii::$app->session->set('carrinho', $carrinho);
-        Yii::$app->session->setFlash('success', 'Quantidade atualizada com sucesso!');
+        Yii::$app->session->setFlash('error', 'Produto não encontrado no carrinho.');
         return $this->redirect(['realizarvenda/index']);
     }
-
 
     public function actionRemoverproduto($id)
     {
@@ -254,19 +286,253 @@ class RealizarvendaController extends Controller
         // Obter o carrinho
         $carrinho = Yii::$app->session->get('carrinho', []);
 
-        // Percorrer o carrinho para encontrar e remover o produto
+        //procurar o produto a ser removido
         foreach ($carrinho as $key => $produtoCarrinho) {
             if ($produtoCarrinho['id'] == $id) {
-                // Remove o produto do carrinho
+                // Guardar a quantidade do produto para uso posterior
+                $quantidadeSelecionada = $produtoCarrinho['quantidade'];
+
+                //verificar se o produto tem tamanho associado
+                if (isset($produtoCarrinho['tamanho'])) {
+                    //produto com tamanho associado
+                    $tamanhoReferencia = $produtoCarrinho['tamanho'];
+                    $produto_id = $produtoCarrinho['id'];
+
+                    //obter o produto e o tamanho
+                    $produto = Produto::findOne($produto_id);
+                    $tamanho = Tamanho::findOne(['referencia' => $tamanhoReferencia]);
+
+                    if ($produto && $tamanho) {
+                        //encontrar a relação do produto com a tabela ProdutosHasTamanho
+                        $produtoTamanho = ProdutoshasTamanho::find()
+                            ->where(['produto_id' => $produto_id, 'tamanho_id' => $tamanho->id])
+                            ->one();
+
+                        if ($produtoTamanho) {
+                            //atualizar a quantidade do produto com o tamanho
+                            $produtoTamanho->quantidade += $quantidadeSelecionada;
+                            $produtoTamanho->save();
+
+                            //atualizar a quantidade do produto principal
+                            $produto->quantidade += $quantidadeSelecionada;
+                            $produto->save();
+                        } else {
+                            Yii::$app->session->setFlash('error', 'Tamanho selecionado não disponível para este produto.');
+                            return $this->redirect(['realizarvenda/index']);
+                        }
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Produto ou Tamanho não encontrados.');
+                        return $this->redirect(['realizarvenda/index']);
+                    }
+                } else {
+                    //produto sem tamanho associado
+                    $produto_id = $produtoCarrinho['id'];
+                    $produto = Produto::findOne($produto_id);
+
+                    if ($produto) {
+                        //atualizar a quantidade do produto
+                        $produto->quantidade += $quantidadeSelecionada;
+                        $produto->save();
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Produto não encontrado.');
+                        return $this->redirect(['realizarvenda/index']);
+                    }
+                }
+
+                //remove o produto do carrinho
                 unset($carrinho[$key]);
                 break;
             }
         }
 
-        // Atualiza o carrinho na sessão
-        Yii::$app->session->set('carrinho', array_values($carrinho)); // Reindexa o array
+        //atualiza o carrinho na sessão
+        Yii::$app->session->set('carrinho', array_values($carrinho));
 
         Yii::$app->session->setFlash('success', 'Produto removido do carrinho com sucesso!');
         return $this->redirect(['realizarvenda/index']);
+    }
+
+    public function actionCompra()
+    {
+        // Verificar se o carrinho existe na sessão
+        $carrinho = Yii::$app->session->get('carrinho');
+
+        if (!$carrinho) {
+            throw new NotFoundHttpException('Carrinho não encontrado.');
+        }
+
+        // Calcular o valor total dos produtos no carrinho
+        $valorProdutos = 0;
+        foreach ($carrinho as $item) {
+            $valorProdutos += $item['preco'] * $item['quantidade'];
+        }
+
+        // Obter os métodos de pagamento e de entrega (em vigor)
+        $metodosPagamento = Metodopagamento::find()->all();
+        $metodosEntrega = Metodoentrega::find()->where(['vigor' => 1])->all();
+        $clientes = User::find()->where(['id' => Yii::$app->authManager->getUserIdsByRole('cliente')])->all();
+
+        // Calcular valores do carrinho
+        $custoEnvio = 0.00;
+        $desconto = 0.00;
+        $ValorPoupado = 0.00;
+        $cupao = null;
+
+        if (Yii::$app->request->isPost) {
+            // Verificar se o cupão foi enviado
+            $cupaoCodigo = Yii::$app->request->post('cupao');
+            $cliente = Yii::$app->request->post('cliente');
+
+            if (Yii::$app->request->post('cliente') != null && $cliente != null) {
+                if ($cupaoCodigo) {
+                    // Buscar o cupão na base de dados
+                    $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
+                    $profile = Profile::find()->where(['user_id' => $cliente])->one();
+
+                    // Verifica se o cupão é válido e não expirou
+                    if ($cupao == null) {
+                        // Se o cupão for inválido, exibe mensagem de erro
+                        Yii::$app->session->setFlash('error', "Cupão inválido");
+                        // Remover o cupão da sessão se inválido
+                        Yii::$app->session->remove('cupao');
+                    } else if ($cupao && strtotime($cupao->dataFim) < time()) {
+                        //Mensagem de erro, caso o cupão tenha expirado
+                        Yii::$app->session->setFlash('error', "Este cupão está expirado.");
+                    } else if (Usocupao::find()->where(['cupaodesconto_id' => $cupao, 'profile_id' => $profile])->exists()) {
+                        // Se o cupão for inválido, exibe mensagem de erro
+                        Yii::$app->session->setFlash('error', "Cupão já utilizado!");
+                    } else if ($cupao && strtotime($cupao->dataFim) >= time()) {
+                        // Calcular o valor poupado com base do desconto do cupão
+                        $ValorPoupado = ($cupao->desconto * $valorProdutos);
+                        $desconto = $cupao->desconto;
+
+                        $Usocupao = new UsoCupao();
+                        $Usocupao->cupaodesconto_id = $cupao->id;
+                        $Usocupao->profile_id = $profile->id;
+                        $Usocupao->dataUso = date('Y-m-d');
+                        $Usocupao->save();
+
+                        // Guarda o cupão na sessão
+                        Yii::$app->session->set('cupao', $cupao);
+
+                        // Se o cupão for aplicado, exibe mensagem de sucesso
+                        Yii::$app->session->setFlash('success', "Cupão aplicado!");
+                    }
+                }
+            }
+        }
+
+        // Capturar o método de entrega selecionado e calcular o custo de envio
+        if ($metodoEntregaId = Yii::$app->request->post('metodo_entrega')) {
+            $metodoEntrega = Metodoentrega::findOne($metodoEntregaId);
+            if ($metodoEntrega) {
+                $custoEnvio = $metodoEntrega->preco;
+            }
+        }
+
+        // Calcular o valor final
+        $valorFinal = ($valorProdutos - $ValorPoupado) + $custoEnvio;
+
+        // Renderizar a página de finalização de compra
+        return $this->render('finalizarcompra', [
+            'metodosPagamento' => $metodosPagamento,
+            'clientes' => $clientes,
+            'metodosEntrega' => $metodosEntrega,
+            'valorProdutos' => $valorProdutos,
+            'desconto' => $desconto,
+            'custoEnvio' => $custoEnvio,
+            'valorFinal' => $valorFinal,
+            'cupao' => $cupao,
+            'ValorPoupado' => $ValorPoupado,
+        ]);
+    }
+
+    public function actionFecharcompra()
+    {
+        // Obtém a sessão
+        $session = Yii::$app->session;
+        // Obtém os produtos do carrinho
+        $carrinho = $session->get('carrinho', []);
+        // Obtém o cupão inserido, se houver
+        $cupaoCodigo = $session->get('cupao');
+        // Obtém o id do cliente selecionado
+        $clienteId = Yii::$app->request->post('cliente');
+        // Obtém o id do método de pagamento e entrega selecionados
+        $metodoPagamentoId = Yii::$app->request->post('metodo_pagamento');
+        $metodoEntregaId = Yii::$app->request->post('metodo_entrega');
+
+        $profile = Profile::find()->where(['user_id' => $clienteId])->one();
+
+        //criar a encomenda
+        $encomenda = new Encomenda();
+        $encomenda->data = date('Y-m-d');
+        $encomenda->hora = date('H:i:s');
+        $encomenda->morada = $profile->morada;
+        $encomenda->telefone = $profile->telefone;
+        $encomenda->email = $profile->user->email;
+        $encomenda->estadoEncomenda = "Em Análise";
+        $encomenda->profile_id = $profile->id;
+        $encomenda->save();
+
+        //criar a base da fatura
+        $fatura = new Fatura();
+        $fatura->dataEmissao = date('Y-m-d');
+        $fatura->horaEmissao = date('H:i:s');
+        $fatura->valorTotal = 0.00;
+        $fatura->ivaTotal = 0.00;
+        $fatura->nif = $profile->nif;
+        $fatura->metodopagamento_id = $metodoPagamentoId;
+        $fatura->metodoentrega_id = $metodoEntregaId;
+        $fatura->encomenda_id = $encomenda->id;
+        $fatura->profile_id = $profile->id;
+
+        if ($fatura->save()) {
+            foreach ($carrinho as $produto) {
+                $produtoID = Produto::find()->where(['id' => $produto['id']])->one();
+                //criar linhas da fatura
+                $linhaFatura = new LinhaFatura();
+                $linhaFatura->dataVenda = date('Y-m-d');
+                if ($produto['tamanho'] != null) {
+                    $linhaFatura->nomeProduto = $produto['nomeProduto'] . " - " . $produto['tamanho'];
+                } else {
+                    $linhaFatura->nomeProduto = $produto['nomeProduto'];
+                }
+                $linhaFatura->quantidade = $produto['quantidade'];
+                $linhaFatura->precoUnit = $produtoID->preco;
+                $linhaFatura->valorIva = $produtoID->iva->percentagem;
+                $linhaFatura->valorComIva = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+                $linhaFatura->subtotal = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+                $linhaFatura->fatura_id = $fatura->id;
+                $linhaFatura->produto_id = $produtoID->id;
+                if ($linhaFatura->save()) {
+                    $fatura->valorTotal += round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+                    $fatura->ivaTotal += $produtoID->iva->percentagem;
+                    $fatura->save();
+                }
+            }
+            $metodoentrega = Metodoentrega::find()->where(['id' => $metodoEntregaId])->one();
+            $fatura->valorTotal += $metodoentrega->preco;
+            $fatura->save();
+
+            //se existir um cupão inserido
+            if ($cupaoCodigo != null) {
+                $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
+
+                $fatura->valorTotal = $fatura->valorTotal - round($cupao->desconto / 100, 2);
+                $fatura->save();
+            }
+        }
+        //verificar se a sessão carrinho existe
+        if (Yii::$app->session->has('carrinho')) {
+            //apagar a variavel de sessão carrinho
+            Yii::$app->session->remove('carrinho');
+        }
+
+        //verificar se a sessão cupao existe
+        if (Yii::$app->session->has('cupao')) {
+            //apagar variavel de sessão cupao
+            Yii::$app->session->remove('cupao');
+        }
+
     }
 }
