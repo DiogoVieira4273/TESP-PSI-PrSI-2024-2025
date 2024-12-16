@@ -135,6 +135,7 @@ class CarrinhocompraController extends Controller
         $linhaCarrinho = Linhacarrinho::findOne([
             'carrinhocompras_id' => $carrinho->id,
             'produto_id' => $produto_id,
+            'tamanho_id' => $tamanho_id,
         ]);
 
         if ($linhaCarrinho) {
@@ -154,16 +155,24 @@ class CarrinhocompraController extends Controller
                 return $this->redirect(['site/produto', 'id' => $produto_id]);
             }
 
-            // Adiciona um novo item ao carrinho
             $linhaCarrinho = new Linhacarrinho();
             $linhaCarrinho->carrinhocompras_id = $carrinho->id;
             $linhaCarrinho->produto_id = $produto_id;
+            $linhaCarrinho->tamanho_id = $tamanho_id;
             $linhaCarrinho->quantidade = $quantidade;
-            $linhaCarrinho->precoUnit = $produto->preco;
-            $linhaCarrinho->valorIva = $produto->preco * ($produto->iva->percentagem / 100);
-            $linhaCarrinho->valorComIva = $linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva);
-            $linhaCarrinho->subtotal = ($linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva)) * $linhaCarrinho->quantidade;
+            $linhaCarrinho->precoUnit = $produto->preco; // Preço unitário sem IVA
 
+            $percentualIva = $produto->iva->percentagem * 100;
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+            $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+            // Atribuir os valores calculados ao modelo
+            $linhaCarrinho->valorIva = round($valorIvaAplicado, 2); // Valor do IVA aplicado
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2); // Total com IVA
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2); // Subtotal sem IVA
+
+            //Guardar na base de dados
             if (!$linhaCarrinho->save()) {
                 Yii::$app->session->setFlash('error', 'Erro ao adicionar o produto ao carrinho.');
                 return $this->redirect(['site/produto', 'id' => $produto_id]);
@@ -239,13 +248,10 @@ class CarrinhocompraController extends Controller
             throw new NotFoundHttpException('Produto não encontrado no carrinho.');
         }
 
-        // Recupera o produto associado à linha do carrinho
-        $produto = $linhaCarrinho->produto;
-
-        // Obtém o tamanho associado ao produto na tabela produtoshastamanho
+        // Obtém o tamanho associado ao produto na tabela ProdutosHasTamanho
         $produtostamanho = ProdutosHasTamanho::findOne([
-            'produto_id' => $produto->id,
-            //'tamanho_id' => $linhaCarrinho->produto->tamanho_id, // Supondo que o tamanho seja uma propriedade da linha do carrinho
+            'produto_id' => $linhaCarrinho->produto_id,
+            'tamanho_id' => $linhaCarrinho->tamanho_id,
         ]);
 
         if (!$produtostamanho) {
@@ -257,12 +263,18 @@ class CarrinhocompraController extends Controller
             // Decrementa a quantidade do carrinho
             $linhaCarrinho->quantidade -= 1;
 
-            // Recalcula o subtotal
-            $linhaCarrinho->subtotal = $linhaCarrinho->quantidade * ($linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva));
+            // Recalcular o subtotal com IVA
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+            $valorIvaAplicado = $subtotalSemIva * ($linhaCarrinho->valorIva / 100);
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+            // Atualizar o subtotal e o valor com IVA
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2); // Total com IVA
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2); // Subtotal com IVA
 
             // Atualiza o carrinho
             if ($linhaCarrinho->save()) {
-                // Incrementa o estoque
+                // Atualiza o estoque, incrementando a quantidade
                 $produtostamanho->quantidade += 1;
                 $produtostamanho->save();
 
@@ -272,14 +284,11 @@ class CarrinhocompraController extends Controller
                 Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade do produto no carrinho.');
             }
         } else {
-            // Exibe mensagem de alerta caso a quantidade seja 1
             Yii::$app->session->setFlash('warning', 'Não é possível reduzir a quantidade para menos de 1. Para remover o produto, use o botão de remover.');
         }
 
         return $this->redirect(['index']);
     }
-
-
 
     public function actionAumentar($id)
     {
@@ -290,40 +299,48 @@ class CarrinhocompraController extends Controller
             throw new NotFoundHttpException('Produto não encontrado no carrinho.');
         }
 
-        // Recupera o produto associado à linha do carrinho
-        $produto = $linhaCarrinho->produto;
-
-        // Obtém o tamanho associado ao produto na tabela produtoshastamanho
+        // Obtém o tamanho associado ao produto na tabela ProdutosHasTamanho
         $produtostamanho = ProdutosHasTamanho::findOne([
-            'produto_id' => $produto->id,
+            'produto_id' => $linhaCarrinho->produto_id,
+            'tamanho_id' => $linhaCarrinho->tamanho_id,
         ]);
 
         if (!$produtostamanho) {
             throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
         }
 
-        // Verifica se há estoque suficiente
-        if ($produtostamanho->quantidade >= 1) {
-            // Decrementa o estoque (remove 1 unidade do estoque)
-            $produtostamanho->quantidade -= 1;
-            $produtostamanho->save();
-
-            // Aumenta a quantidade do carrinho
+        // Verifica se há estoque disponível antes de aumentar
+        if ($produtostamanho->quantidade > 0) {
+            // Incrementa a quantidade no carrinho
             $linhaCarrinho->quantidade += 1;
 
-            // Recalcula o subtotal
-            $linhaCarrinho->subtotal = $linhaCarrinho->quantidade * ($linhaCarrinho->precoUnit + ($linhaCarrinho->precoUnit * $linhaCarrinho->valorIva));
-            $linhaCarrinho->save();
+            // Recalcula o subtotal com IVA
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;  // Preço sem IVA
+            $valorIvaAplicado = $subtotalSemIva * ($linhaCarrinho->valorIva / 100);  // IVA sobre o subtotal
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;  // Subtotal com IVA
 
-            // Atualiza os totais do carrinho
-            $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+            // Atualizar os valores do carrinho
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2);  // Subtotal com IVA
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);  // Subtotal com IVA
+
+            // Atualiza o carrinho
+            if ($linhaCarrinho->save()) {
+                // Decrementa o estoque
+                $produtostamanho->quantidade -= 1;
+                $produtostamanho->save();
+
+                // Atualiza os totais do carrinho
+                $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+            } else {
+                Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade do produto no carrinho.');
+            }
         } else {
-            // Exibe mensagem de alerta caso não haja estoque suficiente
-            Yii::$app->session->setFlash('warning', 'Não há estoque suficiente para aumentar a quantidade do produto.');
+            Yii::$app->session->setFlash('warning', 'Estoque insuficiente para aumentar a quantidade.');
         }
 
         return $this->redirect(['index']);
     }
+
 
 
 

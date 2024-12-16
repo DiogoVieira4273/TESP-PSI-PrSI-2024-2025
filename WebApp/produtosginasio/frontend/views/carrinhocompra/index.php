@@ -45,24 +45,29 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= Html::encode($linha->produto->nomeProduto) ?>
                                     </a>
                                     <h6 class="p_price" style="margin: 10px 0; color: #000;">
-                                    <span class="new_price">
-                                        <?= Html::encode(number_format($linha->precoUnit, 2, ',', '.')) ?>€
-                                    </span>
+            <span class="new_price">
+                <?= Html::encode(number_format($linha->precoUnit, 2, ',', '.')) ?>€
+            </span>
                                     </h6>
+                                    <!-- Exibindo o tamanho -->
+                                    <p style="color: #000;"><strong>Tamanho:</strong>
+                                        <?= Html::encode($linha->tamanho ? $linha->tamanho->referencia : 'N/A') ?>
+                                    </p>
                                     <p style="color: #000;"><strong>Quantidade:</strong>
                                         <span class="quantity-container">
-                                            <a href="<?= Url::to(['carrinhocompra/diminuir', 'id' => $linha->id]) ?>" class="btn btn-warning btn-sm">
-                                                <i class="fa fa-minus"></i>
-                                            </a>
-                                            <span class="quantity-display">
-                                                <?= Html::encode($linha->quantidade) ?>
-                                            </span>
-                                            <a href="<?= Url::to(['carrinhocompra/aumentar', 'id' => $linha->id]) ?>" class="btn btn-success btn-sm">
-                                                <i class="fa fa-plus"></i>
-                                            </a>
-                                        </span>
+                    <a href="<?= Url::to(['carrinhocompra/diminuir', 'id' => $linha->id]) ?>" class="btn btn-warning btn-sm">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <span class="quantity-display">
+                        <?= Html::encode($linha->quantidade) ?>
+                    </span>
+                    <a href="<?= Url::to(['carrinhocompra/aumentar', 'id' => $linha->id]) ?>" class="btn btn-success btn-sm">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </span>
                                     </p>
                                     <p style="color: #000;"><strong>Subtotal:</strong> <?= Html::encode(number_format($linha->subtotal, 2, ',', '.')) ?>€</p>
+
                                 </div>
                                 <div class="p_cart">
                                     <?= Html::a('<i class="fa fa-trash"></i>', ['carrinhocompra/delete', 'id' => $linha->id], [
@@ -93,5 +98,3 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php endif; ?>
     </div>
 </div>
-
-

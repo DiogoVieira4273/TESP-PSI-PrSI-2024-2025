@@ -78,20 +78,11 @@ $this->title = $model->nomeProduto;
                 </div>
             </div>
 
-
-            <!--<a href="<?= Url::to(['carrinhocompra/create', 'produto_id' => $model->id, 'tamanho_id' => $produtoHasTamanho->tamanho_id, 'quantidade' => $produtoHasTamanho->quantidade]) ?>" class="ms-3">
-                <i class="fa fa-cart-plus" aria-hidden="true" style="color: white;"></i>
-            </a>-->
+            <!-- Botão para Adicionar ao Carrinho -->
             <a href="#" id="adicionar-carrinho" class="ms-3">
                 <i class="fa fa-cart-plus" aria-hidden="true" style="color: white;"></i>
             </a>
 
-            <!--<form action="<?= Url::to(['carrinhocompra/create']) ?>" method="get">
-                <input type="hidden" name="produto_id" value="<?= $model->id ?>" />
-                <input type="hidden" name="tamanho_id" value="<?= $produtoHasTamanho->tamanho_id ?>" />
-               <input type="number" name="quantidade" value="1" min="1" />
-                <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
-            </form>-->
 
             <a href="<?= Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">
                 <i class="fa fa-heart" aria-hidden="true" style="color: white;"></i>
@@ -197,3 +188,4 @@ $this->title = $model->nomeProduto;
         window.location.href = url;
     });
 </script>
+
