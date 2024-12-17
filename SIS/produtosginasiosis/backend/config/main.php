@@ -115,6 +115,17 @@ return [
                         'GET marcas' => 'marcas',
                     ],
                 ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/cupaodesconto',
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET cupaodesconto' => 'cupaodesconto',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/usocupao',
+                    'extraPatterns' => [
+                        'POST usocupao' => 'usocupao',
+                    ],
+                ],
             ],
         ],
 
