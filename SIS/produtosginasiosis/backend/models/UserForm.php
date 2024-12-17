@@ -81,10 +81,10 @@ class UserForm extends Model
         return null;
     }
 
-    public function update($username, $email, $password, $nif, $morada, $telefone)
+    public function update($UserID, $username, $email, $password, $nif, $morada, $telefone)
     {
         //seleciona o user a editar
-        $user = User::findOne(['username' => $username]);
+        $user = User::findOne(['id' => $UserID]);
 
         //altera os respetivos os dados do user a editar
         $user->username = $username;
