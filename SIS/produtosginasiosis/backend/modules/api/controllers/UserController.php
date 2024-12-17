@@ -63,25 +63,23 @@ class UserController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
-                if (!Yii::$app->user->isGuest) {
-                    //instancia o UserForm
-                    $model = new UserForm();
+                //instancia o UserForm
+                $model = new UserForm();
 
-                    $request = Yii::$app->request;
+                $request = Yii::$app->request;
 
-                    $username = $request->getBodyParam('username');
-                    $email = $request->getBodyParam('email');
-                    $password = $request->getBodyParam('password');
-                    $nif = $request->getBodyParam('nif');
-                    $morada = $request->getBodyParam('morada');
-                    $telefone = $request->getBodyParam('telefone');
+                $username = $request->getBodyParam('username');
+                $email = $request->getBodyParam('email');
+                $password = $request->getBodyParam('password');
+                $nif = $request->getBodyParam('nif');
+                $morada = $request->getBodyParam('morada');
+                $telefone = $request->getBodyParam('telefone');
 
-                    if ($model->update($user->id, $username, $email, $password, $nif, $morada, $telefone)) {
-                        return 'Cliente atualizado com sucesso!';
-                    }
-
-                    return 'Falha na atualização do cliente pretendido';
+                if ($model->update($user->id, $username, $email, $password, $nif, $morada, $telefone)) {
+                    return 'Cliente atualizado com sucesso!';
                 }
+
+                return 'Falha na atualização do cliente pretendido';
             }
         }
         return 'Não foi realizado a atualização dos dados.';
