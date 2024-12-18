@@ -39,6 +39,7 @@
                         'label' => 'Vendas',
                         'items' => [
                             ['label' => 'Realizar Venda', 'icon' => 'fa fa-cart-plus', 'url' => ['/realizarvenda/index']],
+                            ['label' => 'Ver Vendas', 'icon' => 'fa-solid fa-euro-sign', 'url' => ['/venda/index']],
                         ],
                     ],
                     ['label' => 'Mercadoria', 'header' => true],
