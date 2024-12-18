@@ -53,6 +53,33 @@ class AvaliacaoController extends ActiveController
         return 'Não foi possível criar a Avaliação ao produto pretendido.';
     }
 
+    public function actionAlteraravaliacao()
+    {
+        $userID = Yii::$app->params['id'];
+
+        if ($user = User::find()->where(['id' => $userID])->one()) {
+            // Verifica se o utilizador tem o papel "cliente"
+            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
+                return 'O Utilizador introduzido não tem permissões de cliente';
+            } else {
+                $request = Yii::$app->request;
+                $avaliacaoId = $request->getBodyParam('avaliacao');
+
+                $profile = Profile::find()->where(['user_id' => $user->id])->one();
+                $avaliacao = Avaliacao::find()->where(['id' => $avaliacaoId, 'profile_id' => $profile->id])->one();
+
+                if ($avaliacao != null) {
+                    $avaliacao->update();
+                    return 'Avaliação alterada com sucesso!';
+                } else {
+                    return 'Avaliação não encontrada.';
+                }
+            }
+        }
+
+        return 'Não foi possível alterar a avaliação do produto pretendido.';
+    }
+
     public function actionApagaravaliacao()
     {
         $userID = Yii::$app->params['id'];
