@@ -265,7 +265,8 @@ class CarrinhocompraController extends Controller
 
             // Recalcular o subtotal com IVA
             $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
-            $valorIvaAplicado = $subtotalSemIva * ($linhaCarrinho->valorIva / 100);
+            $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+            $valorIvaAplicado = $subtotalSemIva * $percentualIva;
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
             // Atualizar o subtotal e o valor com IVA
@@ -314,14 +315,15 @@ class CarrinhocompraController extends Controller
             // Incrementa a quantidade no carrinho
             $linhaCarrinho->quantidade += 1;
 
-            // Recalcula o subtotal com IVA
-            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;  // Preço sem IVA
-            $valorIvaAplicado = $subtotalSemIva * ($linhaCarrinho->valorIva / 100);  // IVA sobre o subtotal
-            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;  // Subtotal com IVA
+            // Recalcular o subtotal com IVA
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+            $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+            $valorIvaAplicado = $subtotalSemIva * $percentualIva;
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
             // Atualizar os valores do carrinho
-            $linhaCarrinho->subtotal = round($subtotalComIva, 2);  // Subtotal com IVA
-            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);  // Subtotal com IVA
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
 
             // Atualiza o carrinho
             if ($linhaCarrinho->save()) {
