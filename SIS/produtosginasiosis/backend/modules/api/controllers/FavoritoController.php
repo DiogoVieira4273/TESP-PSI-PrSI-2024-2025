@@ -58,4 +58,31 @@ class FavoritoController extends ActiveController
         }
         return 'Não foi possível obter os favoritos.';
     }
+
+    public function actionAtribuirprodutofavorito()
+    {
+        $userID = Yii::$app->params['id'];
+
+        if ($user = User::find()->where(['id' => $userID])->one()) {
+            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
+                return 'O Utilizador introduzido não tem permissões de cliente';
+            }
+            else{
+                $request = Yii::$app->request;
+
+                $profile = Profile::find()->where(['user_id' => $user->id])->one();
+
+                $favorito = new Favorito();
+
+                $produtoId = $request->getBodyParam('produto');
+
+                $favorito->produto_id = $produtoId;
+                $favorito->profile_id = $profile->id;
+                $favorito->save();
+
+                return 'Favorito com sucesso!';
+            }
+        }
+        return 'Favorito não encontrado.';
+    }
 }
