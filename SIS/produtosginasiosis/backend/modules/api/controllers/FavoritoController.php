@@ -85,4 +85,31 @@ class FavoritoController extends ActiveController
         }
         return 'Favorito não encontrado.';
     }
+
+    public function actionApagarprodutofavorito()
+    {
+        $userID = Yii::$app->params['id'];
+
+        if ($user = User::find()->where(['id' => $userID])->one()) {
+            // Verifica se o utilizador tem o papel "cliente"
+            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
+                return 'O Utilizador introduzido não tem permissões de cliente';
+            } else {
+                $request = Yii::$app->request;
+                $produtoID = $request->getBodyParam('produto');
+
+                $profile = Profile::find()->where(['user_id' => $user->id])->one();
+                $favorito = Favorito::find()->where(['produto_id' => $produtoID, 'profile_id' => $profile->id])->one();
+
+                if ($favorito != null) {
+                    $favorito->delete();
+                    return 'Favorito apagado com sucesso!';
+                } else {
+                    return 'Favorito não encontrada.';
+                }
+            }
+        }
+
+        return 'Não foi possível apagar o produto pretendido nos favoritos.';
+    }
 }
