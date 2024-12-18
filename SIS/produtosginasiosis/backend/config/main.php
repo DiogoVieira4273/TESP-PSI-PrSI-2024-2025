@@ -126,6 +126,11 @@ return [
                         'POST usocupao' => 'usocupao',
                     ],
                 ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/carrinhocompra',
+                    'extraPatterns' => [
+                        'POST adicionarcarrinho' => 'adicionarcarrinho',
+                    ],
+                ],
             ],
         ],
 
