@@ -3,6 +3,8 @@
 namespace backend\modules\api\controllers;
 
 use backend\modules\api\components\CustomAuth;
+use common\models\Favorito;
+use common\models\Profile;
 use common\models\User;
 use Yii;
 use yii\rest\ActiveController;
@@ -56,6 +58,4 @@ class FavoritoController extends ActiveController
         }
         return 'Não foi possível obter os favoritos.';
     }
-
-
 }

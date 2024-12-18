@@ -79,5 +79,4 @@ class AvaliacaoController extends ActiveController
 
         return 'Não foi possível apagar a avaliação do produto pretendido.';
     }
-
 }

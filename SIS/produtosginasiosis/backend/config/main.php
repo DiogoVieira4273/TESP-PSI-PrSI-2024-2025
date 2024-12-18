@@ -83,6 +83,8 @@ return [
                     'extraPatterns' => [
                         'GET count' => 'count',
                         'GET favoritos' => 'favoritos',
+                        'POST atribuirprodutofavorito' => 'atribuirprodutofavorito',
+                        'DELETE apagarprodutofavorito' => 'apagarprodutofavorito',
                     ],
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/categoria',
