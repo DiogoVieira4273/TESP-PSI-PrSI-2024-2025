@@ -6,6 +6,7 @@ use backend\modules\api\components\CustomAuth;
 use common\models\Carrinhocompra;
 use common\models\Linhacarrinho;
 use common\models\Produto;
+use common\models\ProdutosHasTamanho;
 use common\models\Profile;
 use Yii;
 use yii\filters\auth\QueryParamAuth;
@@ -179,6 +180,119 @@ class CarrinhocompraController extends ActiveController
             'status' => 'success',
             'message' => 'Linha do carrinho apagada com sucesso.',
         ];
+    }
+
+    public function actionDiminuir($id)
+    {
+        $linhaCarrinho = Linhacarrinho::findOne($id);
+
+        if (!$linhaCarrinho) {
+            throw new NotFoundHttpException('Produto não encontrado no carrinho.');
+        }
+
+        $produtostamanho = ProdutosHasTamanho::findOne([
+            'produto_id' => $linhaCarrinho->produto_id,
+            'tamanho_id' => $linhaCarrinho->tamanho_id,
+        ]);
+
+        if (!$produtostamanho) {
+            throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
+        }
+
+        if ($linhaCarrinho->quantidade > 1) {
+            $linhaCarrinho->quantidade -= 1;
+
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+            $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+            $valorIvaAplicado = $subtotalSemIva * $percentualIva;
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+
+            if ($linhaCarrinho->save()) {
+                $produtostamanho->quantidade += 1;
+                $produtostamanho->save();
+
+                $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+
+                return [
+                    'status' => 'success',
+                    'message' => 'Quantidade diminuída com sucesso.',
+                ];
+            } else {
+                throw new ServerErrorHttpException('Erro ao atualizar a linha do carrinho.');
+            }
+        } else {
+            throw new \yii\web\BadRequestHttpException('A quantidade não pode ser menor que 1. Use a rota de remoção para excluir o produto.');
+        }
+    }
+
+
+    public function actionAumentar($id)
+    {
+        $linhaCarrinho = Linhacarrinho::findOne($id);
+
+        if (!$linhaCarrinho) {
+            throw new NotFoundHttpException('Produto não encontrado no carrinho.');
+        }
+
+        $produtostamanho = ProdutosHasTamanho::findOne([
+            'produto_id' => $linhaCarrinho->produto_id,
+            'tamanho_id' => $linhaCarrinho->tamanho_id,
+        ]);
+
+        if (!$produtostamanho) {
+            throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
+        }
+
+        if ($produtostamanho->quantidade > 0) {
+            $linhaCarrinho->quantidade += 1;
+
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+            $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+            $valorIvaAplicado = $subtotalSemIva * $percentualIva;
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+
+            if ($linhaCarrinho->save()) {
+                $produtostamanho->quantidade -= 1;
+                $produtostamanho->save();
+
+                $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+
+                return [
+                    'status' => 'success',
+                    'message' => 'Quantidade aumentada com sucesso.',
+                ];
+            } else {
+                throw new ServerErrorHttpException('Erro ao atualizar a linha do carrinho.');
+            }
+        } else {
+            throw new \yii\web\ConflictHttpException('Estoque insuficiente para aumentar a quantidade.');
+        }
+    }
+
+
+    public function updateCarrinhoTotal($carrinhocompras_id)
+    {
+        $carrinho = Carrinhocompra::findOne($carrinhocompras_id);
+
+        if ($carrinho) {
+            $carrinho->quantidade = 0;
+            $carrinho->valorTotal = 0;
+
+            foreach ($carrinho->linhascarrinhos as $linha) {
+                $carrinho->quantidade += $linha->quantidade;
+                $carrinho->valorTotal += $linha->subtotal;
+            }
+
+            if (!$carrinho->save()) {
+                throw new ServerErrorHttpException('Erro ao atualizar o total do carrinho.');
+            }
+        }
     }
 
 }
