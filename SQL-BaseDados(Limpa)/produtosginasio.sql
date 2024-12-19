@@ -417,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `encomendas` (
   `data` date NOT NULL,
   `hora` time NOT NULL,
   `morada` text NOT NULL,
-  `telefone` mediumint NOT NULL,
+  `telefone` int NOT NULL,
   `email` mediumtext NOT NULL,
   `estadoEncomenda` text NOT NULL,
   `profile_id` int NOT NULL,
