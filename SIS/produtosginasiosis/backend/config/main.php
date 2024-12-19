@@ -131,6 +131,7 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/carrinhocompra',
                     'extraPatterns' => [
                         'POST adicionarcarrinho' => 'adicionarcarrinho',
+                        'DELETE apagarlinhacarrinho' => 'apagarlinhacarrinho',
                     ],
                 ],
             ],

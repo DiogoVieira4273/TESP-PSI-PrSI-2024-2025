@@ -135,4 +135,50 @@ class CarrinhocompraController extends ActiveController
             'message' => 'Produto adicionado ao carrinho com sucesso.',
         ];
     }
+
+    public function actionApagarlinhacarrinho($id)
+    {
+        // Verifica se a linha do carrinho existe
+        $linhaCarrinho = Linhacarrinho::findOne($id);
+        if (!$linhaCarrinho) {
+            throw new NotFoundHttpException('Linha do carrinho não encontrada.');
+        }
+
+        // Vai obter o carrinho relacionado à linha do carrinho
+        $carrinho = Carrinhocompra::findOne($linhaCarrinho->carrinhocompras_id);
+        if (!$carrinho) {
+            throw new NotFoundHttpException('Carrinho não encontrado.');
+        }
+
+        // Atualiza a quantidade do tamanho do produto correspondente
+        $produtostamanho = \common\models\ProdutosHasTamanho::findOne([
+            'produto_id' => $linhaCarrinho->produto_id,
+            'tamanho_id' => $linhaCarrinho->tamanho_id,
+        ]);
+
+        if ($produtostamanho) {
+            $produtostamanho->quantidade += $linhaCarrinho->quantidade;
+            if (!$produtostamanho->save()) {
+                throw new ServerErrorHttpException('Erro ao atualizar o estoque do produto.');
+            }
+        }
+
+        // Atualiza o total do carrinho antes de remover a linha
+        $carrinho->quantidade -= $linhaCarrinho->quantidade;
+        $carrinho->valorTotal -= $linhaCarrinho->subtotal;
+
+        if (!$carrinho->save()) {
+            throw new ServerErrorHttpException('Erro ao atualizar os totais do carrinho.');
+        }
+
+        if (!$linhaCarrinho->delete()) {
+            throw new ServerErrorHttpException('Erro ao apagar a linha do carrinho.');
+        }
+
+        return [
+            'status' => 'success',
+            'message' => 'Linha do carrinho apagada com sucesso.',
+        ];
+    }
+
 }
