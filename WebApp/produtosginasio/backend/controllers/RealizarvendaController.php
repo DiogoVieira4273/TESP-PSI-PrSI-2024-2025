@@ -475,7 +475,7 @@ class RealizarvendaController extends Controller
         $encomenda->morada = $morada;
         $encomenda->telefone = $telefone;
         $encomenda->email = $email;
-        $encomenda->estadoEncomenda = "Em Análise";
+        $encomenda->estadoEncomenda = "Em processamento";
         $encomenda->profile_id = $profile->id;
         $encomenda->save();
 
