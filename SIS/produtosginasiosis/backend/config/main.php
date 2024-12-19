@@ -136,6 +136,11 @@ return [
                         'DELETE apagarlinhacarrinho' => 'apagarlinhacarrinho',
                     ],
                 ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/encomenda',
+                    'extraPatterns' => [
+                        'POST criarencomenda' => 'criarencomenda',
+                    ],
+                ],
             ],
         ],
 
