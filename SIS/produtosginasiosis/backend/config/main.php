@@ -49,10 +49,14 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user',
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/login',
                     'extraPatterns' => [
                         'POST login' => 'login',
                         'POST criaruser' => 'criaruser',
+                    ],
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user',
+                    'extraPatterns' => [
                         'POST atualizaruser' => 'atualizaruser',
                         'GET dadosuserprofile' => 'dadosuserprofile',
                     ],
