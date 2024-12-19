@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProdutosGinasio"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".DetalhesDeEncomendasActivity"
@@ -37,21 +38,6 @@
             android:name=".CarrinhoDeComprasActivity"
             android:exported="false" />
         <activity
-            android:name=".ItemHistoricoDeComprasActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ItemCarrinhoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DetalhesCarrinhoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ListaDetalhesProdutosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ProdutosListaActivity"
-            android:exported="false" />
-        <activity
             android:name=".MenuMainActivity"
             android:exported="false"
             android:launchMode="singleTop"
@@ -61,7 +47,13 @@
             android:exported="false" />
         <activity
             android:name=".ipActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".RegistoActivity"
             android:exported="false" />
@@ -70,12 +62,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false">
         </activity>
     </application>
 
