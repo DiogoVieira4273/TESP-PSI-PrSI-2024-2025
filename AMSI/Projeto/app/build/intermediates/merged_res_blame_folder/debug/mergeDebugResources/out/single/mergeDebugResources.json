@@ -1,0 +1,278 @@
+[
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_app_bar_main.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/app_bar_main.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_activity_ip.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/activity_ip.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_terminar_sessao.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_terminar_sessao.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/xml_backup_rules.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_add_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_add_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_user_person.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_user_person.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_add_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_add_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_carrinho.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_carrinho.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/menu_menu_main.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/menu/menu_main.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_add_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_add_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_historico_compras.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_historico_compras.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_terminar_sessao.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_terminar_sessao.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_home.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_home.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_user_person.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_user_person.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_terminar_sessao.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_terminar_sessao.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_terminar_sessao.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_terminar_sessao.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_home.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_home.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_add_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_add_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_home.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_home.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_terminar_sessao.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_terminar_sessao.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_activity_login.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/activity_login.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_item_lista_produto.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/item_lista_produto.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_historico_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_historico_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_carrinho_compras.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_carrinho_compras.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_carrinho.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_carrinho.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_activity_detalhes_produto.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/activity_detalhes_produto.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_historico_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_historico_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_home.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_home.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_favoritos.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_favoritos.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-anydpi/ic_launcher.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_action_carrinho_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_action_carrinho_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_carrinho.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_carrinho.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/xml_data_extraction_rules.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable_ic_launcher_background.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_carrinho.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_carrinho.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_user_person.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_user_person.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_home.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_home.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_historico_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_historico_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_fragment_pagina_inicial.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/fragment_pagina_inicial.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_historico_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_historico_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_action_carrinho_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_action_carrinho_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable_logotipo_projeto.jpg.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable/logotipo_projeto.jpg"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_carrinho_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_carrinho_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xhdpi_ic_action_favoritos.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xhdpi/ic_action_favoritos.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_carrinho_compras.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_carrinho_compras.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_activity_menu_main.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/activity_menu_main.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_fragment_lista_produtos.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/fragment_lista_produtos.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-anydpi_ic_action_add_favoritos.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-anydpi/ic_action_add_favoritos.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_activity_registo.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/activity_registo.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-xxhdpi_ic_user_person.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-xxhdpi/ic_user_person.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-hdpi_ic_action_carrinho.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-hdpi/ic_action_carrinho.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/layout_nav_header_menu.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/layout/nav_header_menu.xml"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/drawable-mdpi_ic_user_person.png.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/drawable-mdpi/ic_user_person.png"
+    },
+    {
+        "merged": "pt.ipleiria.estg.projeto.produtosginasio.app-debug-31:/mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "pt.ipleiria.estg.projeto.produtosginasio.app-main-33:/mipmap-anydpi/ic_launcher_round.xml"
+    }
+]
