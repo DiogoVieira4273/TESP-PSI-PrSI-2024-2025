@@ -8,6 +8,7 @@ use backend\models\LinhacompraSearch;
 use common\models\Iva;
 use common\models\Marca;
 use common\models\Produto;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -25,6 +26,17 @@ class LinhacompraController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin', 'funcionario'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

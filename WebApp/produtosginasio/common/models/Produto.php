@@ -2,9 +2,7 @@
 
 namespace common\models;
 
-use frontend\models\Linhacarrinho;
 use backend\models\Linhacompra;
-use frontend\models\Favorito;
 
 /**
  * This is the model class for table "produtos".

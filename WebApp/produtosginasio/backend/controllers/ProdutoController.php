@@ -4,21 +4,21 @@ namespace backend\controllers;
 
 use backend\models\ImagemForm;
 use common\models\Avaliacao;
+use common\models\Categoria;
+use common\models\Favorito;
+use common\models\Genero;
 use common\models\Imagem;
+use common\models\Iva;
+use common\models\Marca;
 use common\models\Produto;
 use common\models\ProdutoSearch;
-use common\models\Marca;
-use common\models\Categoria;
-use common\models\Genero;
 use common\models\ProdutosHasTamanho;
 use common\models\Tamanho;
-use common\models\Iva;
-use frontend\models\Favorito;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
