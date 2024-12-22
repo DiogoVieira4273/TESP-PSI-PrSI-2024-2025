@@ -2,7 +2,7 @@
 
 namespace backend\modules\api\controllers;
 
-use backend\models\UserForm2;
+use backend\models\UserForm;
 use backend\modules\api\components\CustomAuth;
 use common\models\User;
 use Yii;
@@ -32,8 +32,8 @@ class UserController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
-                //instancia o UserForm2
-                $model = new UserForm2();
+                //instancia o UserForm
+                $model = new UserForm();
 
                 $request = Yii::$app->request;
 

@@ -2,7 +2,7 @@
 
 namespace backend\modules\api\controllers;
 
-use backend\models\UserForm2;
+use backend\models\UserForm;
 use Yii;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
@@ -49,8 +49,8 @@ class LoginController extends ActiveController
 
     public function actionCriaruser()
     {
-        //instancia o UserForm2
-        $model = new UserForm2();
+        //instancia o UserForm
+        $model = new UserForm();
 
         $request = Yii::$app->request;
 
