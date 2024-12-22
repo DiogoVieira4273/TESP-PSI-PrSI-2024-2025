@@ -5,6 +5,7 @@ namespace backend\controllers;
 use common\models\Metodoentrega;
 use common\models\MedodoentregaSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,17 @@ class MetodoentregaController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin', 'funcionario'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -69,7 +81,7 @@ class MetodoentregaController extends Controller
     public function actionCreate()
     {
         $model = new Metodoentrega();
-        $vigor = [0=>'não vigor', 1=>'vigor'];
+        $vigor = [0 => 'não vigor', 1 => 'vigor'];
 
         if ($this->request->isPost) {
             // Carregar os dados do formulário no modelo

@@ -1,16 +1,14 @@
 <?php
 namespace frontend\controllers;
+use common\models\Carrinhocompra;
 use common\models\Cupaodesconto;
 use common\models\Encomenda;
 use common\models\Fatura;
+use common\models\Linhacarrinho;
 use common\models\Linhafatura;
 use common\models\Metodoentrega;
-use common\models\Produto;
-use common\models\Profile;
-use common\models\Usocupao;
-use frontend\models\Carrinhocompra;
 use common\models\Metodopagamento;
-use frontend\models\Linhacarrinho;
+use common\models\Usocupao;
 use Mpdf\Mpdf;
 use Yii;
 use yii\filters\VerbFilter;
