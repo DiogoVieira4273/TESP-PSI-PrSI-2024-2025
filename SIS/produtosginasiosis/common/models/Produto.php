@@ -4,6 +4,7 @@ namespace common\models;
 
 use backend\models\Linhacompra;
 use frontend\models\Linhacarrinho;
+use mosquitto\phpMQTT;
 
 /**
  * This is the model class for table "produtos".
@@ -178,5 +179,77 @@ class Produto extends \yii\db\ActiveRecord
     public function getTamanho()
     {
         return $this->hasOne(Tamanho::class, ['id' => 'tamanho_id']);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        $id = $this->id;
+        $nomeProduto = $this->nomeProduto;
+        $preco = $this->preco;
+        $quantidade = $this->quantidade;
+        $descricaoProduto = $this->descricaoProduto;
+        $marca = $this->marca;
+        $tamanho = $this->tamanho;
+        $genero = $this->genero;
+        $iva = $this->iva;
+        $categoria = $this->categoria;
+        $imagens = $this->imagens;
+
+        $myObj = new \stdClass();
+        $myObj->nomeProduto = $nomeProduto;
+        $myObj->preco = $preco;
+        $myObj->quantidade = $quantidade;
+        $myObj->descricaoProduto = $descricaoProduto;
+        $myObj->marca = $marca;
+        $myObj->tamanho = $tamanho;
+        $myObj->genero = $genero;
+        $myObj->iva = $iva;
+        $myObj->categoria = $categoria;
+        $myObj->imagens = $imagens;
+
+
+        if ($insert)
+        {
+            $myJSON = "Foi inserido um produto: ".json_encode($myObj->nomeProduto);
+            $this->FazPublishNoMosquitto("INSERT_PRODUTO", $myJSON);
+        }
+        else
+        {
+            $myJSON = "Foi atualizado um produto: ".json_encode($myObj->nomeProduto);
+            $this->FazPublishNoMosquitto("UPDATE_PRODUTO", $myJSON);
+        }
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+
+        $prod_id = $this->id;
+        $myObj = new \stdClass();
+        $myObj->id = $prod_id;
+        $myJSON = "Foi deletado um produto: ".json_encode($myObj->nomeProduto);
+
+        $this->FazPublishNoMosquitto("DELETE_PRODUTO", $myJSON);
+    }
+
+    public function FazPublishNoMosquitto($canal, $msg)
+    {
+        $server = "127.0.0.1";
+        $port = 1883;
+        $username = "";
+        $password = "";
+        $client_id = "phpMQTT-publisher";
+        $mqtt = new phpMQTT($server, $port, $client_id);
+        if ($mqtt->connect(true, NULL, $username, $password))
+        {
+            $mqtt->publish($canal, $msg, 0);
+            $mqtt->close();
+        }
+        else
+        {
+            file_put_contents("debug.output", "Time out");
+        }
     }
 }

@@ -2,10 +2,6 @@
 
 namespace common\models;
 
-use common\models\Produto;
-use common\models\Tamanho;
-use common\models\Carrinhocompra;
-
 /**
  * This is the model class for table "linhascarrinhos".
  *

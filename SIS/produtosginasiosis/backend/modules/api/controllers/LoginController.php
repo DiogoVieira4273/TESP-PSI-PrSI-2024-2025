@@ -62,7 +62,7 @@ class LoginController extends ActiveController
         $telefone = $request->getBodyParam('telefone');
 
         if ($model->create($username, $email, $password, $nif, $morada, $telefone)) {
-            return ['username' => $username, 'email' => $email, 'password' => $password, 'nif' => $nif, 'morada' => $morada, 'telefone' => $telefone];
+            return ['message' => 'Cliente criado com sucesso!'];
         }
 
         Yii::$app->response->statusCode = 400;
