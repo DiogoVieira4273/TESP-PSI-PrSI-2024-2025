@@ -100,6 +100,7 @@ AppAsset::register($this);
                             'items' => [
                                 ['label' => 'Meu Perfil', 'url' => ['user/view', 'id' => Yii::$app->user->identity->getId()]],
                                 ['label' => 'Minhas Compras', 'url' => ['compra/index', 'id' => Yii::$app->user->identity->getId()]],
+                                ['label' => 'Minhas Encomendas', 'url' => ['encomenda/index', 'id' => Yii::$app->user->identity->getId()]],
                             ],
                             'encode' => false,
 

@@ -17,7 +17,7 @@ $this->title = 'Minhas Compras';
         <h1><?= Html::encode($this->title) ?></h1>
 
         <?php foreach ($faturas as $fatura): ?>
-            <div class="produto-avaliacoes">
+            <div class="compra-descricao">
                 <h3>Fatura Nº <?= $fatura->id ?></h3>
                 <?= Html::a('Ver Fatura', ['view', 'id' => $fatura->id], ['class' => 'fa-solid fa-file-pdf']) ?>
 
