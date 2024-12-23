@@ -30,6 +30,24 @@ class ProdutoController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
+                $produtosmodel = new $this->modelClass;
+                $produtos = $produtosmodel::find()->count();
+                return ['count' => count($produtos)];
+            }
+        }
+        return 'Não foi possivel contar os produtos.';
+
+    }
+
+    public function actionProdutos()
+    {
+        $userID = Yii::$app->params['id'];
+
+        if ($user = User::find()->where(['id' => $userID])->one()) {
+            // Verifica se o utilizador tem o papel "cliente"
+            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
+                return 'O Utilizador introduzido não tem permissões de cliente';
+            } else {
                 $produtos = Produto::find()
                     ->with(['imagens' => function ($query) {
                         // Carrega apenas a primeira imagem associada
@@ -66,26 +84,7 @@ class ProdutoController extends ActiveController
                 return $resultado;
             }
         }
-        return 'Não foi possivel contar os produtos.';
-
-    }
-
-    public function actionProdutos()
-    {
-        $userID = Yii::$app->params['id'];
-
-        if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
-            } else {
-                $produtosmodel = new $this->modelClass;
-                $produtos = $produtosmodel::find()->all();
-                return ['produtos' => $produtos];
-            }
-        }
         return 'Não foi possível obter os produtos.';
-
     }
 
     public function actionBuscarpornome($nomeProduto)
