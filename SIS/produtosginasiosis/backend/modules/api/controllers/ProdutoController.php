@@ -30,9 +30,40 @@ class ProdutoController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
-                $produtosmodel = new $this->modelClass;
-                $recs = $produtosmodel::find()->all();
-                return ['count' => count($recs)];
+                $produtos = Produto::find()
+                    ->with(['imagens' => function ($query) {
+                        // Carrega apenas a primeira imagem associada
+                        $query->orderBy(['id' => SORT_ASC])->limit(1);
+                    }])
+                    ->orderBy(['id' => SORT_DESC])
+                    ->all();
+                $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+                $resultado = [];
+                foreach ($produtos as $produto) {
+                    // Inicie o array do produto
+                    $produtoData = [
+                        'id' => $produto->id,
+                        'nomeProduto' => $produto->nomeProduto,
+                        'preco' => $produto->preco,
+                        'quantidade' => $produto->quantidade,
+                        'descricaoProduto' => $produto->descricaoProduto,
+                        'marca' => $produto->marca->nomeMarca,
+                        'categoria' => $produto->categoria->nomeCategoria,
+                        'iva' => $produto->iva->percentagem,
+                        'genero' => $produto->genero->referencia,
+                        'imagem' => null
+                    ];
+                    // Verifica se o produto tem imagens associadas
+                    if (!empty($produto->imagens)) {
+                        // Vai buscar a primeira imagem
+                        $primeiraImagem = $produto->imagens[0];
+                        // Monta a URL completa da imagem
+                        $produtoData['imagem'] = $baseUrl . $primeiraImagem->filename;
+                    }
+                    //adiciona os dados do produto ao array de resultados
+                    $resultado[] = $produtoData;
+                }
+                return $resultado;
             }
         }
         return 'Não foi possivel contar os produtos.';
