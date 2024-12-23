@@ -145,6 +145,12 @@ return [
                         'POST criarencomenda' => 'criarencomenda',
                     ],
                 ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/fatura',
+                    'extraPatterns' => [
+                        'GET compras' => 'compras',
+                        'GET download' => 'download',
+                    ],
+                ],
             ],
         ],
 

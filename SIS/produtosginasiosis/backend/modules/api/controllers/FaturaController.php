@@ -44,6 +44,45 @@ class FaturaController extends ActiveController
         return 'Não foi possível contar as faturas.';
     }
 
+    public function actionCompras()
+    {
+        $userID = Yii::$app->params['id'];
+
+        if ($user = User::find()->where(['id' => $userID])->one()) {
+            // Verifica se o utilizador tem o papel "cliente"
+            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
+                return 'O Utilizador introduzido não tem permissões de cliente';
+            } else {
+                $profile = Profile::find()->where(['user_id' => $userID])->one();
+                $faturas = Fatura::find()->where(['profile_id' => $profile->id])->all();
+
+                $resultado = [];
+
+                foreach ($faturas as $fatura) {
+                    // Inicie o array das faturas-compras do cliente
+                    $CompraData = [
+                        'id' => $fatura->id,
+                        'dataEmissao' => $fatura->dataEmissao,
+                        'horaEmissao' => $fatura->horaEmissao,
+                        'valorTotal' => $fatura->valorTotal,
+                        'ivaTotal' => $fatura->ivaTotal,
+                        'nif' => $fatura->nif,
+                        'metodopagamento_id' => $fatura->metodopagamento_id,
+                        'metodoentrega_id' => $fatura->metodoentrega_id,
+                        'encomenda_id' => $fatura->encomenda_id,
+                        'profile_id' => $fatura->profile_id,
+                    ];
+
+                    //adiciona os dados no array de resultados
+                    $resultado[] = $CompraData;
+                }
+                return $resultado;
+            }
+        }
+        return 'Não foi possível obter os produtos.';
+
+    }
+
     public function actionCriarfatura()
     {
 
@@ -146,5 +185,21 @@ class FaturaController extends ActiveController
         }
 
         return 'Não foi possível criar a Linha da Fatura.';
+    }
+
+    public function actionDownload()
+    {
+        $request = Yii::$app->request;
+        $faturaID = $request->getBodyParam('fatura');
+
+        //caminho para ir buscar a fatura
+        $faturaPath = Yii::getAlias('@common/faturas/' . 'fatura_' . $faturaID . '.pdf');
+
+        //verifica se o arquivo existe
+        if (file_exists($faturaPath)) {
+            return Yii::$app->response->sendFile($faturaPath);
+        } else {
+            return 'Fatura não encontrada.';
+        }
     }
 }

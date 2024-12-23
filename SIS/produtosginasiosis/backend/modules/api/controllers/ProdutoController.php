@@ -3,6 +3,7 @@
 namespace backend\modules\api\controllers;
 
 use backend\modules\api\components\CustomAuth;
+use common\models\Produto;
 use common\models\User;
 use Yii;
 use yii\rest\ActiveController;
@@ -31,8 +32,8 @@ class ProdutoController extends ActiveController
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
                 $produtosmodel = new $this->modelClass;
-                $produtos = $produtosmodel::find()->count();
-                return ['count' => count($produtos)];
+                $recs = $produtosmodel::find()->all();
+                return ['count' => count($recs)];
             }
         }
         return 'Não foi possivel contar os produtos.';
@@ -55,8 +56,10 @@ class ProdutoController extends ActiveController
                     }])
                     ->orderBy(['id' => SORT_DESC])
                     ->all();
+
                 $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
                 $resultado = [];
+
                 foreach ($produtos as $produto) {
                     // Inicie o array do produto
                     $produtoData = [
@@ -71,13 +74,16 @@ class ProdutoController extends ActiveController
                         'genero' => $produto->genero->referencia,
                         'imagem' => null
                     ];
+
                     // Verifica se o produto tem imagens associadas
                     if (!empty($produto->imagens)) {
                         // Vai buscar a primeira imagem
                         $primeiraImagem = $produto->imagens[0];
+
                         // Monta a URL completa da imagem
                         $produtoData['imagem'] = $baseUrl . $primeiraImagem->filename;
                     }
+
                     //adiciona os dados do produto ao array de resultados
                     $resultado[] = $produtoData;
                 }
@@ -85,6 +91,7 @@ class ProdutoController extends ActiveController
             }
         }
         return 'Não foi possível obter os produtos.';
+
     }
 
     public function actionBuscarpornome($nomeProduto)
