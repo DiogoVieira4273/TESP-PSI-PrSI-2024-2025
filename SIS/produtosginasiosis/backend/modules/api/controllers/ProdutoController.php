@@ -61,7 +61,7 @@ class ProdutoController extends ActiveController
                 $resultado = [];
 
                 foreach ($produtos as $produto) {
-                    // Inicie o array do produto
+                    //array dos produto
                     $produtoData = [
                         'id' => $produto->id,
                         'nomeProduto' => $produto->nomeProduto,

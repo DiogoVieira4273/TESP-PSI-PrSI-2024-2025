@@ -62,7 +62,7 @@ class FaturaController extends ActiveController
                     // Inicie o array das faturas-compras do cliente
                     $CompraData = [
                         'id' => $fatura->id,
-                        'dataEmissao' => $fatura->dataEmissao,
+                        'dataEmissao' => date('d-m-Y', strtotime($fatura->dataEmissao)),
                         'horaEmissao' => $fatura->horaEmissao,
                         'valorTotal' => $fatura->valorTotal,
                         'ivaTotal' => $fatura->ivaTotal,

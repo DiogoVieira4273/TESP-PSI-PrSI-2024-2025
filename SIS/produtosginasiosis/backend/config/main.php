@@ -143,6 +143,8 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/encomenda',
                     'extraPatterns' => [
                         'POST criarencomenda' => 'criarencomenda',
+                        'GET encomendas' => 'encomendas',
+                        'GET detalhesencomenda' => 'detalhesencomenda',
                     ],
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/fatura',

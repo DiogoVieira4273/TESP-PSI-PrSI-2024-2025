@@ -3,6 +3,7 @@
 namespace backend\modules\api\controllers;
 
 use backend\models\UserForm;
+use common\models\Profile;
 use Yii;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
@@ -25,6 +26,7 @@ class LoginController extends ActiveController
         }
 
         $user = $userModel::find()->where(['username' => $username])->one();
+        $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
         if (!$user || !$user->validatePassword($password)) {
             Yii::$app->response->statusCode = 400;
@@ -44,7 +46,7 @@ class LoginController extends ActiveController
             return ['message' => 'Não foi possível obter a auth_key'];
         }
 
-        return ['auth_key' => $auth_key];
+        return ['auth_key' => $auth_key, 'username' => $username, 'email' => $user->email, 'profile_id' => $profile->id];
     }
 
     public function actionCriaruser()
