@@ -66,8 +66,7 @@ class FavoritoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
-            }
-            else{
+            } else {
                 $request = Yii::$app->request;
 
                 $profile = Profile::find()->where(['user_id' => $user->id])->one();
@@ -80,7 +79,7 @@ class FavoritoController extends ActiveController
                 $favorito->profile_id = $profile->id;
                 $favorito->save();
 
-                return 'Favorito com sucesso!';
+                return $favorito;
             }
         }
         return 'Favorito não encontrado.';
