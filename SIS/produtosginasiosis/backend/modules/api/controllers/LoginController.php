@@ -46,7 +46,7 @@ class LoginController extends ActiveController
             return ['message' => 'Não foi possível obter a auth_key'];
         }
 
-        return ['auth_key' => $auth_key, 'username' => $username, 'email' => $user->email, 'profile_id' => $profile->id];
+        return ['auth_key' => $auth_key, 'username' => $user->username, 'email' => $user->email, 'profile_id' => $profile->id];
     }
 
     public function actionCriaruser()
