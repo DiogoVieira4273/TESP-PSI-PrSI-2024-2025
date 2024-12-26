@@ -45,10 +45,11 @@ class UserController extends ActiveController
                 $morada = $request->getBodyParam('morada');
                 $telefone = $request->getBodyParam('telefone');
 
-                if ($model->update($user->id, $username, $email, $password, $nif, $morada, $telefone)) {
+                $resultado = $model->update($user->id, $username, $email, $password, $nif, $morada, $telefone);
 
+                if ($resultado) {
+                    return $resultado;
                 }
-                return 'Cliente atualizado com sucesso!';
 
                 return 'Falha na atualização do cliente pretendido';
             }

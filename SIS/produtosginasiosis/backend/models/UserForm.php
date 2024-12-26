@@ -11,7 +11,7 @@ use common\models\Profile;
 class UserForm extends Model
 {
 
-    public $modelClass = 'common\models\User';
+    //public $modelClass = 'common\models\User';
 
     public function rules()
     {
@@ -97,7 +97,7 @@ class UserForm extends Model
         $user->email = $email;
 
         //se o campo da password não estiver vazia, edita a password
-        if ($user->password != null) {
+        if ($password != null) {
             $user->setPassword($password);
         }
 
@@ -116,7 +116,7 @@ class UserForm extends Model
 
             //se o registo do perfil foi concluído
             if ($profile->save()) {
-                return true;
+                return ['username' => $user->username, 'email' => $user->email, 'password' => $user->password, 'nif' => $profile->nif, 'morada' => $profile->morada, 'telefone' => $profile->telefone];
             }
         }
         return null;
