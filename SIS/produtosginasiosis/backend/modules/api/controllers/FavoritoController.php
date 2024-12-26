@@ -4,6 +4,8 @@ namespace backend\modules\api\controllers;
 
 use backend\modules\api\components\CustomAuth;
 use common\models\Favorito;
+use common\models\Imagem;
+use common\models\Produto;
 use common\models\Profile;
 use common\models\User;
 use Yii;
@@ -47,19 +49,39 @@ class FavoritoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
+            //verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
+                $profile = Profile::find()->where(['user_id' => $userID])->one();
                 $favoritosmodel = new $this->modelClass;
-                $produtos = $favoritosmodel::find()->all();
-                return ['produtos' => $produtos];
+
+                $favoritos = $favoritosmodel::find()->where(['profile_id' => $profile->id])->all();
+                $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+                $resultados = [];
+                foreach ($favoritos as $favorito) {
+                    $produto = Produto::findOne($favorito->produto_id);
+                    $data = [
+                        'nomeProduto' => $produto->nomeProduto,
+                        'preco' => $produto->preco,
+                        'imagem' => null,];
+                    if (!empty($produto->imagens)) {
+                        //vai buscar a primeira imagem
+                        $primeiraImagem = $produto->imagens[0];
+                        $data['imagem'] = $baseUrl . $primeiraImagem->filename;
+                    }
+                    //adiciona os dados do produto ao array
+                    $resultados[] = $data;
+                }
+
+                return $resultados;
             }
         }
         return 'Não foi possível obter os favoritos.';
     }
 
-    public function actionAtribuirprodutofavorito()
+    public
+    function actionAtribuirprodutofavorito()
     {
         $userID = Yii::$app->params['id'];
 
@@ -85,7 +107,8 @@ class FavoritoController extends ActiveController
         return 'Favorito não encontrado.';
     }
 
-    public function actionApagarprodutofavorito()
+    public
+    function actionApagarprodutofavorito()
     {
         $userID = Yii::$app->params['id'];
 
