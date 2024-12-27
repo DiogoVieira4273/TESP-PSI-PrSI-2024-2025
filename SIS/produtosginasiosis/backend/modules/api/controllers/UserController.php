@@ -2,7 +2,6 @@
 
 namespace backend\modules\api\controllers;
 
-use backend\models\UserForm;
 use backend\modules\api\components\CustomAuth;
 use common\models\Profile;
 use common\models\User;
@@ -33,8 +32,6 @@ class UserController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
-                //instancia o UserForm
-                $model = new UserForm();
 
                 $request = Yii::$app->request;
 
@@ -45,13 +42,33 @@ class UserController extends ActiveController
                 $morada = $request->getBodyParam('morada');
                 $telefone = $request->getBodyParam('telefone');
 
-                $resultado = $model->update($user->id, $username, $email, $password, $nif, $morada, $telefone);
+                //altera os respetivos os dados do user a editar
+                $user->username = $username;
+                $user->email = $email;
 
-                if ($resultado) {
-                    return $resultado;
+                //se o campo da password não estiver vazia, edita a password
+                if ($password != null) {
+                    $user->setPassword($password);
                 }
 
-                return 'Falha na atualização do cliente pretendido';
+                $user->generateAuthKey();
+
+                //se a alteração dos dados do user foram gravados com sucesso
+                if ($user->save(false)) {
+
+                    //seleciona o perfil do user a editar
+                    $profile = Profile::findOne(['user_id' => $user->id]);
+
+                    //altera os respetivos os dados do perfil do user a editar
+                    $profile->nif = $nif;
+                    $profile->morada = $morada;
+                    $profile->telefone = $telefone;
+
+                    //se o registo do perfil foi concluído
+                    if ($profile->save()) {
+                        return ['auth_key' => $user->auth_key];
+                    }
+                }
             }
         }
         return 'Não foi realizado a atualização dos dados.';

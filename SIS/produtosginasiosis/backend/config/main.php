@@ -57,7 +57,7 @@ return [
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user',
                     'extraPatterns' => [
-                        'POST atualizaruser' => 'atualizaruser',
+                        'PUT atualizaruser' => 'atualizaruser',
                         'GET dadosuserprofile' => 'dadosuserprofile',
                     ],
                 ],
