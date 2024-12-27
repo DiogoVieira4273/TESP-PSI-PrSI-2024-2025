@@ -62,6 +62,9 @@ class FavoritoController extends ActiveController
                 foreach ($favoritos as $favorito) {
                     $produto = Produto::findOne($favorito->produto_id);
                     $data = [
+                        'id' => $favorito->id,
+                        'produto_id' => $favorito->produto_id,
+                        'profile_id' => $favorito->profile_id,
                         'nomeProduto' => $produto->nomeProduto,
                         'preco' => $produto->preco,
                         'imagem' => null,];
@@ -80,8 +83,7 @@ class FavoritoController extends ActiveController
         return 'Não foi possível obter os favoritos.';
     }
 
-    public
-    function actionAtribuirprodutofavorito()
+    public function actionAtribuirprodutofavorito()
     {
         $userID = Yii::$app->params['id'];
 
@@ -99,16 +101,44 @@ class FavoritoController extends ActiveController
 
                 $favorito->produto_id = $produtoId;
                 $favorito->profile_id = $profile->id;
-                $favorito->save();
+                if ($favorito->save()) {
+                    $produto = Produto::find()->where(['id' => $produtoId])->one();
 
-                return $favorito;
+                    $imagens = Produto::find()
+                        ->with(['imagens' => function ($query) {
+                            //carrega apenas a primeira imagem associada
+                            $query->orderBy(['id' => SORT_ASC])->limit(1);
+                        }])
+                        ->where(['id' => $produtoId])
+                        ->all();
+
+                    $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+
+                    // Verifica se o produto tem imagens associadas
+                    if (!empty($produto->imagens)) {
+                        //vai buscar a primeira imagem
+                        $primeiraImagem = $produto->imagens[0];
+
+                        $imagem = $baseUrl . $primeiraImagem->filename;
+                    } else {
+                        $imagem = null;
+                    }
+
+                    return [
+                        'id' => $favorito->id,
+                        'produto_id' => $favorito->produto_id,
+                        'profile_id' => $favorito->profile_id,
+                        'nomeProduto' => $produto->nomeProduto,
+                        'preco' => $produto->preco,
+                        'imagem' => $imagem
+                    ];
+                }
             }
         }
         return 'Favorito não encontrado.';
     }
 
-    public
-    function actionApagarprodutofavorito()
+    public function actionApagarprodutofavorito()
     {
         $userID = Yii::$app->params['id'];
 
@@ -118,14 +148,13 @@ class FavoritoController extends ActiveController
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
                 $request = Yii::$app->request;
-                $produtoID = $request->getBodyParam('produto');
+                $favoritoID = $request->getBodyParam('favorito');
 
-                $profile = Profile::find()->where(['user_id' => $user->id])->one();
-                $favorito = Favorito::find()->where(['produto_id' => $produtoID, 'profile_id' => $profile->id])->one();
+                $favorito = Favorito::find()->where(['id' => $favoritoID])->one();
 
                 if ($favorito != null) {
                     $favorito->delete();
-                    return 'Favorito apagado com sucesso!';
+                    return $favorito;
                 } else {
                     return 'Favorito não encontrada.';
                 }

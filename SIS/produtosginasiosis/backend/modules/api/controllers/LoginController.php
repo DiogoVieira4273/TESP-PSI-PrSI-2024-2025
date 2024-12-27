@@ -62,6 +62,23 @@ class LoginController extends ActiveController
         $morada = $request->getBodyParam('morada');
         $telefone = $request->getBodyParam('telefone');
 
+        if (empty($username) || empty($password) || empty($email) || empty($nif) || empty($morada) || empty($telefone)) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Campos vazios'];
+        } else if (User::find()->where(['username' => $username])->one()) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Username inserido já está em uso.'];
+        } else if (User::find()->where(['email' => $email])->one()) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Email inserido já está em uso.'];
+        } else if (Profile::find()->where(['nif' => $nif])->one()) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Nif inserido já está em uso.'];
+        } else if (Profile::find()->where(['telefone' => $telefone])->one()) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Telefone inserido já está em uso.'];
+        }
+
         //cria um novo Utilizador
         $user = new User();
 
