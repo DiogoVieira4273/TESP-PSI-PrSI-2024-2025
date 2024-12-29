@@ -154,7 +154,9 @@ class FavoritoController extends ActiveController
 
                 if ($favorito != null) {
                     $favorito->delete();
-                    return $favorito;
+                    //$favorito->delete();
+                    //return $favorito;
+                    return $favorito->delete();
                 } else {
                     return 'Favorito não encontrada.';
                 }
