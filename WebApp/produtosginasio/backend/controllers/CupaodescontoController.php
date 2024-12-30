@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use common\models\Cupaodesconto;
 use common\models\CupaodescontoSearch;
+use common\models\Usocupao;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -123,7 +125,15 @@ class CupaodescontoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Usocupao::find()->where(['cupaodesconto_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este cupão, devido a estar a ser utilizado.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

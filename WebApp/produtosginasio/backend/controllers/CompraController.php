@@ -5,7 +5,8 @@ namespace backend\controllers;
 use backend\models\Compra;
 use backend\models\CompraSearch;
 use backend\models\Fornecedor;
-use common\models\Marca;
+use backend\models\Linhacompra;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -131,7 +132,16 @@ class CompraController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        // Verificar se existem produtos relacionados ao fornecedor
+        if (Linhacompra::find()->where(['compra_id' => $model->id])->exists()) {
+            // Se houver produtos relacionados, impedir a exclusão e exibir uma mensagem de erro
+            Yii::$app->session->setFlash('error', 'Não é possível apagar esta compra/pedido de mercadoria, pois existem produtos relacionados.');
+            return $this->redirect(['index']); // Redireciona de volta para a página de índice
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

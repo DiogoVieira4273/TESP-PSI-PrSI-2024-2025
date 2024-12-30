@@ -147,4 +147,20 @@ class FaturaController extends ActiveController
 
         return 'Não foi possível criar a Linha da Fatura.';
     }
+
+    public function actionDownload()
+    {
+        $request = Yii::$app->request;
+        $faturaID = $request->getBodyParam('fatura');
+
+        //caminho para ir buscar a fatura
+        $faturaPath = Yii::getAlias('@common/faturas/' . 'fatura_' . $faturaID . '.pdf');
+
+        //verifica se o arquivo existe
+        if (file_exists($faturaPath)) {
+            return Yii::$app->response->sendFile($faturaPath);
+        } else {
+            return 'Fatura não encontrada.';
+        }
+    }
 }

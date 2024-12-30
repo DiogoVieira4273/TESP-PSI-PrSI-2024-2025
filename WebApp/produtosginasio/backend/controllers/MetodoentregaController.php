@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\Fatura;
 use common\models\Metodoentrega;
 use common\models\MedodoentregaSearch;
 use Yii;
@@ -155,7 +156,15 @@ class MetodoentregaController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Fatura::find()->where(['metodoentrega_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este método entrega, devido a estar a ser utilizado.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

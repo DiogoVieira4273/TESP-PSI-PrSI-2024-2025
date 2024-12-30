@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\Fatura;
 use common\models\Metodopagamento;
 use common\models\MedodopagamentoSearch;
 use Yii;
@@ -149,7 +150,15 @@ class MetodopagamentoController extends Controller
     public function actionDelete($id)
     {
         if ($id != 1 && $id != 2) {
-            $this->findModel($id)->delete();
+            $model = $this->findModel($id);
+
+            //verificar se existem produtos relacionados à marca
+            if (Fatura::find()->where(['metodopagamento_id' => $model->id])->exists()) {
+                Yii::$app->session->setFlash('error', 'Não é possível apagar este método pagamento, devido a estar a ser utilizado.');
+                return $this->redirect(['index']);
+            }
+
+            $model->delete();
         }
 
         return $this->redirect(['index']);
