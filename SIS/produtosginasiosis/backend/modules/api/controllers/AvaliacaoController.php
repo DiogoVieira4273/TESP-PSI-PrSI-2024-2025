@@ -45,8 +45,8 @@ class AvaliacaoController extends ActiveController
                 $avaliacao->produto_id = $produtoId;
                 $avaliacao->profile_id = $profile->id;
                 $avaliacao->save();
-
-                return 'Avaliação criada com sucesso!';
+                
+                return $avaliacao;
             }
         }
 

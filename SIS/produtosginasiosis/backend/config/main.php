@@ -83,6 +83,11 @@ return [
                         '{produto_id}' => '<produto_id:\\d+>',
                     ],
                 ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/avaliacao',
+                    'extraPatterns' => [
+                        'POST criaravaliacao' => 'criaravaliacao',
+                    ],
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/favorito',
                     'extraPatterns' => [
                         'GET count' => 'count',
