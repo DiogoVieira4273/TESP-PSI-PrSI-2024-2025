@@ -34,14 +34,16 @@ class FaturaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $faturaModel = new $this->modelClass;
                 $recs = $faturaModel::find()->all();
                 return ['count' => count($recs)];
             }
         }
-        return 'Não foi possível contar as faturas.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível contar as faturas.'];
     }
 
     public function actionCompras()
@@ -51,7 +53,8 @@ class FaturaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $profile = Profile::find()->where(['user_id' => $userID])->one();
                 $faturas = Fatura::find()->where(['profile_id' => $profile->id])->all();
@@ -79,7 +82,8 @@ class FaturaController extends ActiveController
                 return $resultado;
             }
         }
-        return 'Não foi possível obter os produtos.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível obter os produtos.'];
 
     }
 
@@ -92,7 +96,8 @@ class FaturaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
@@ -121,7 +126,8 @@ class FaturaController extends ActiveController
             }
         }
 
-        return 'Não foi criada a Fatura.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi criada a Fatura.'];
     }
 
     public function actionCriarlinhafatura()
@@ -137,7 +143,8 @@ class FaturaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 if (Fatura::find()->where(['id' => $faturaID])->one()) {
                     $produto = Produto::find()->where(['id' => $produtoID])->one();
@@ -155,10 +162,12 @@ class FaturaController extends ActiveController
                                 //acrescenta no nome do produto o respetivo tamanho
                                 $linhaFatura->nomeProduto = $produto->nomeProduto . " - " . $tamanho;
                             } else {
-                                return 'O tamanho introduzido não existe no produto escolhido.';
+                                Yii::$app->response->statusCode = 400;
+                                return ['message' => 'O tamanho introduzido não existe no produto escolhido.'];
                             }
                         } else {
-                            return 'O tamanho inserido não existe.';
+                            Yii::$app->response->statusCode = 400;
+                            return ['message' => 'O tamanho inserido não existe.'];
                         }
                     } else {
                         //caso contrario, atribui apenas o nome do produto
@@ -184,7 +193,8 @@ class FaturaController extends ActiveController
             }
         }
 
-        return 'Não foi possível criar a Linha da Fatura.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível criar a Linha da Fatura.'];
     }
 
     public function actionDownload()
@@ -199,7 +209,8 @@ class FaturaController extends ActiveController
         if (file_exists($faturaPath)) {
             return Yii::$app->response->sendFile($faturaPath);
         } else {
-            return 'Fatura não encontrada.';
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Fatura não encontrada.'];
         }
     }
 }

@@ -32,7 +32,8 @@ class AvaliacaoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
@@ -45,12 +46,13 @@ class AvaliacaoController extends ActiveController
                 $avaliacao->produto_id = $produtoId;
                 $avaliacao->profile_id = $profile->id;
                 $avaliacao->save();
-                
+
                 return $avaliacao;
             }
         }
 
-        return 'Não foi possível criar a Avaliação ao produto pretendido.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível criar a Avaliação ao produto pretendido.'];
     }
 
     public function actionAlteraravaliacao()
@@ -60,7 +62,8 @@ class AvaliacaoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $request = Yii::$app->request;
                 $avaliacaoId = $request->getBodyParam('avaliacao');
@@ -72,12 +75,14 @@ class AvaliacaoController extends ActiveController
                     $avaliacao->update();
                     return 'Avaliação alterada com sucesso!';
                 } else {
-                    return 'Avaliação não encontrada.';
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Avaliação não encontrada.'];
                 }
             }
         }
 
-        return 'Não foi possível alterar a avaliação do produto pretendido.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível alterar a avaliação do produto pretendido.'];
     }
 
     public function actionApagaravaliacao()
@@ -87,7 +92,8 @@ class AvaliacaoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $request = Yii::$app->request;
                 $avaliacaoId = $request->getBodyParam('avaliacao');
@@ -99,11 +105,13 @@ class AvaliacaoController extends ActiveController
                     $avaliacao->delete();
                     return 'Avaliação apagada com sucesso!';
                 } else {
-                    return 'Avaliação não encontrada.';
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Avaliação não encontrada.'];
                 }
             }
         }
 
-        return 'Não foi possível apagar a avaliação do produto pretendido.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível apagar a avaliação do produto pretendido.'];
     }
 }

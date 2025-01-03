@@ -30,7 +30,8 @@ class UserController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
 
                 $request = Yii::$app->request;
@@ -71,7 +72,8 @@ class UserController extends ActiveController
                 }
             }
         }
-        return 'Não foi realizado a atualização dos dados.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi realizado a atualização dos dados.'];
 
     }
 
@@ -82,7 +84,8 @@ class UserController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
 
                 $cliente = User::find()->where(['id' => $userID])->one();
@@ -91,10 +94,12 @@ class UserController extends ActiveController
                 if ($cliente != null && $profile != null) {
                     return ['username' => $cliente->username, 'email' => $cliente->email, 'nif' => $profile->nif, 'morada' => $profile->morada, 'telefone' => $profile->telefone];
                 } else {
-                    return 'Falha no obter dos dados do cliente especifico';
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Falha a obter dos dados do cliente especifico'];
                 }
             }
         }
-        return 'Não foi possivel os dados do utilizador';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel os dados do utilizador'];
     }
 }

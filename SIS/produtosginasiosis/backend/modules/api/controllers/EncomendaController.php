@@ -39,13 +39,15 @@ class EncomendaController extends ActiveController
         // Vai buscar o perfil associado ao user
         $profile = Profile::findOne(['user_id' => $userId]); // Vai buscar o perfil pelo user_id associado ao user autenticado
         if (!$profile) {
-            throw new NotFoundHttpException('Perfil do cliente não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil do cliente não encontrado.'];
         }
 
         // Agora, buscamos o carrinho do cliente
         $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
         if (!$carrinho || empty($carrinho->linhascarrinhos)) {
-            throw new NotFoundHttpException('Carrinho vazio ou não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho vazio ou não encontrado.'];
         }
 
         // Obtém os dados da requisição usando getBodyParam
@@ -65,7 +67,8 @@ class EncomendaController extends ActiveController
         $encomenda->profile_id = $profile->id;
 
         if (!$encomenda->save()) {
-            throw new ServerErrorHttpException('Erro ao guardar a encomenda.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao guardar a encomenda.'];
         }
 
         // Retornar a resposta de sucesso
@@ -83,7 +86,8 @@ class EncomendaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $profile = Profile::find()->where(['user_id' => $userID])->one();
                 $encomendas = Encomenda::find()->where(['profile_id' => $profile->id])->all();
@@ -109,7 +113,8 @@ class EncomendaController extends ActiveController
                 return $resultado;
             }
         }
-        return 'Não foi possível obter as encomendas.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível obter as encomendas.'];
 
     }
 
@@ -120,7 +125,8 @@ class EncomendaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $request = Yii::$app->request;
                 $encomendaID = $request->getBodyParam('encomenda');
@@ -163,7 +169,8 @@ class EncomendaController extends ActiveController
                 ];
             }
         }
-        return 'Não foi possível obter os detalhes da encomenda pretendida.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível obter os detalhes da encomenda pretendida.'];
     }
 
 }
