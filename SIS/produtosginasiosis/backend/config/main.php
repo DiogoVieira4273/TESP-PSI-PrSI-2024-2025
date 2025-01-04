@@ -143,6 +143,7 @@ return [
                         'POST diminuir' => 'diminuir',
                         'POST aumentar' => 'aumentar',
                         'DELETE apagarlinhacarrinho' => 'apagarlinhacarrinho',
+                        'GET carrinho' => 'carrinho',
                     ],
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/encomenda',

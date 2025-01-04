@@ -29,6 +29,52 @@ class CarrinhocompraController extends ActiveController
         return $behaviors;
     }
 
+    public function actionCarrinho()
+    {
+        // Vai obter o ID do user autenticado
+        $userId = Yii::$app->params['id'];
+
+        // Vai buscar o perfil associado ao usuário
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
+
+        // Vai buscar o carrinho associado ao perfil
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 404;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
+
+        // Estruturar os dados para resposta
+        $linhasCarrinho = [];
+        foreach ($carrinho->linhascarrinhos as $linha) {
+            $produto = $linha->produto;
+            $tamanho = $linha->tamanho;
+
+            $linhasCarrinho[] = [
+                'produto_nome' => $produto ? $produto->nomeProduto : 'Produto não encontrado',
+                'tamanho_nome' => $tamanho ? $tamanho->referencia : 'Tamanho não encontrado',
+                'quantidade' => $linha->quantidade,
+                'precoUnit' => $linha->precoUnit,
+                'subtotal' => $linha->subtotal,
+                'valorComIva' => $linha->valorComIva,
+            ];
+        }
+
+        return [
+            'quantidade_total' => $carrinho->quantidade,
+            'valorTotal' => $carrinho->valorTotal,
+            'linhasCarrinho' => $linhasCarrinho,
+        ];
+    }
+
+
+
+
+
     public function actionAdicionarcarrinho($produto_id, $tamanho_id)
     {
 
