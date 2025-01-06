@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use mosquitto\phpMQTT;
+use common\mosquitto\phpMQTT;
 
 /**
  * This is the model class for table "cupoesdescontos".
@@ -66,22 +66,24 @@ class Cupaodesconto extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
 
         $id = $this->id;
+        $codigo = $this->codigo;
         $desconto = $this->desconto;
         $dataFim = $this->dataFim;
 
         $myObj = new \stdClass();
+        $myObj->codigo=$codigo;
         $myObj->desconto = $desconto;
         $myObj->dataFim = $dataFim;
 
         if ($insert)
         {
             $myJSON = "Existe um novo cupão";
-            $this->FazPublishNoMosquitto("INSERT_CUPAODESDESCONTO", $myJSON);
+            $this->FazPublishNoMosquitto("INSERT_CUPAODESCONTO", $myJSON);
         }
         else
         {
             $myJSON = "Existe um cupão atualizado";
-            $this->FazPublishNoMosquitto("UPDATE_CUPAODESDESCONTO", $myJSON);
+            $this->FazPublishNoMosquitto("UPDATE_CUPAODESCONTO", $myJSON);
         }
     }
 
@@ -96,7 +98,7 @@ class Cupaodesconto extends \yii\db\ActiveRecord
 
         $myJSON = "Foi eliminado um cupão";
 
-        $this->FazPublishNoMosquitto("DELETE_CUPAODESDESCONTO", $myJSON);
+        $this->FazPublishNoMosquitto("DELETE_CUPAODESCONTO", $myJSON);
     }
 
     public function FazPublishNoMosquitto($canal, $msg)

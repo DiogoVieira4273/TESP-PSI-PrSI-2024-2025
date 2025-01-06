@@ -2,8 +2,7 @@
 
 namespace common\models;
 
-use mosquitto\phpMQTT;
-use Yii;
+
 
 /**
  * This is the model class for table "profiles".
@@ -129,58 +128,4 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasMany(Usocupao::class, ['profile_id' => 'id']);
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        parent::afterSave($insert, $changedAttributes);
-
-        $id = $this->id;
-        $nif = $this->nif;
-        $morada = $this->morada;
-        $telefone = $this->telefone;
-        $user = $this->user->username;
-
-        $myObj = new \stdClass();
-        $myObj->id = $id;
-        $myObj->nif = $nif;
-        $myObj->morada = $morada;
-        $myObj->telefone = $telefone;
-        $myObj->user = $user;
-
-        if ($insert) {
-            $myJSON = "Foi criado um perfil com o NIF " . $myObj->nif . ", com a morada " . $myObj->morada . " e com o telefone: " . $myObj->telefone . " para o utilizador com o nome de utilizador: " . $myObj->user;
-            $this->FazPublishNoMosquitto("INSERT_PROFILE", $myJSON);
-        } else {
-            $myJSON = "Foi atualizado um perfil para o user " . $myObj->user;
-            $this->FazPublishNoMosquitto("UPDATE_PROFILE", $myJSON);
-        }
-    }
-
-    public function afterDelete()
-    {
-        parent::afterDelete();
-
-        $id = $this->id;
-
-        $myObj = new \stdClass();
-        $myObj->id = $id;
-
-        $myJSON = "Foi excluido um perfil para o user " . $myObj->user;
-        $this->FazPublishNoMosquitto("DELETE_PROFILE", $myJSON);
-    }
-
-    public function FazPublishNoMosquitto($canal, $msg)
-    {
-        $server = "127.0.0.1";
-        $port = 1883;
-        $username = "";
-        $password = "";
-        $cliente_id = "phpMQTT-publisher";
-        $mqtt = new phpMQTT($server, $port, $cliente_id);
-        if ($mqtt->connect(true, NULL, $username, $password)) {
-            $mqtt->publish($canal, $msg, 0);
-            $mqtt->close();
-        } else {
-            file_put_contents("debug.output", "Time out");
-        }
-    }
 }

@@ -2,7 +2,8 @@
 
 namespace common\models;
 
-use mosquitto\phpMQTT;
+
+use common\mosquitto\phpMQTT;
 
 /**
  * This is the model class for table "avaliacoes".
@@ -89,7 +90,7 @@ class Avaliacao extends \yii\db\ActiveRecord
 
         if ($insert)
         {
-            $myJSON = "Foi criada uma avaliação: ".json_encode($myObj->descricao)."para o produto ".json_encode($myObj->produto)." pelo profile ".json_encode($myObj->profile);
+            $myJSON = "Foi criada uma avaliação: ".json_encode($myObj->descricao)."para o produto ".json_encode($myObj->produto->id)." pelo profile ".json_encode($myObj->profile->id);
             $this->FazPublishNoMosquitto("INSERT_AVALIACAO", $myJSON);
         }
         else
@@ -112,22 +113,26 @@ class Avaliacao extends \yii\db\ActiveRecord
         $this->FazPublishNoMosquitto("DELETE_AVALIACAO", $myJSON);
     }
 
+
     public function FazPublishNoMosquitto($canal, $msg)
     {
-        $server = "127.0.0.1";
-        $port = 1883;
-        $username = "";
-        $password = "";
-        $cliente_id = "phpMQTT-publisher";
-        $mqtt = new phpMQTT($server, $port, $cliente_id);
-        if ($mqtt->connect(true, NULL, $username, $password))
-        {
-            $mqtt->publish($canal, $msg, 0);
-            $mqtt->close();
-        }
-        else
-        {
-            file_put_contents("debug.output", "Time out");
+        try {
+            $server = "127.0.0.1";
+            $port = 1883;
+            $username = "";
+            $password = "";
+            $cliente_id = "phpMQTT-publisher";
+            $mqtt = new phpMQTT($server, $port, $cliente_id);
+
+            if ($mqtt->connect(true, NULL, $username, $password)) {
+                $mqtt->publish($canal, $msg, 0);
+                $mqtt->close();
+            } else {
+                file_put_contents("debug.output", "Time out");
+            }
+        } catch (\Throwable $e) {
+            // Log the error for debugging
+            file_put_contents("debug.output", "Erro ao publicar no MQTT: " . $e->getMessage());
         }
     }
 }

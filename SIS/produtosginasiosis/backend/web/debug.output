@@ -1,0 +1,1 @@
+Erro ao publicar no MQTT: stream_socket_client(): Unable to connect to tcp://127.0.0.1:1883 (Connection refused)

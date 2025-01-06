@@ -2,9 +2,10 @@
 
 namespace common\models;
 
-use backend\models\Linhacompra;
-use frontend\models\Linhacarrinho;
-use mosquitto\phpMQTT;
+
+
+use common\mosquitto\phpMQTT;
+
 
 /**
  * This is the model class for table "produtos".
@@ -33,6 +34,7 @@ use mosquitto\phpMQTT;
  */
 class Produto extends \yii\db\ActiveRecord
 {
+    const SCENARIO_CREATE = 'create';
     /**
      * {@inheritdoc}
      */
@@ -47,18 +49,18 @@ class Produto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nomeProduto', 'preco', 'quantidade', 'descricaoProduto', 'marca_id', 'categoria_id', 'iva_id'], 'required'],
+            [['nomeProduto', 'preco', 'descricaoProduto', 'marca_id', 'categoria_id', 'iva_id', 'genero_id'], 'required'],
             [['preco'], 'number'],
-            [['quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id', 'tamanho_id'], 'integer'],
+            [['quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id'], 'integer'],
             [['descricaoProduto'], 'string'],
             [['nomeProduto'], 'string', 'max' => 50],
-            [['quantidade'], 'integer', 'min' => 0, 'message' => 'A quantidade do estoque não pode ser negativa.'],
+            [['quantidade'], 'integer', 'min' => 0, 'message' => 'A quantidade do stock não pode ser negativa.'],
             [['preco'], 'number', 'min' => 0.01, 'message' => 'O preço deve ser maior que zero.'],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categoria::class, 'targetAttribute' => ['categoria_id' => 'id']],
             [['genero_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genero::class, 'targetAttribute' => ['genero_id' => 'id']],
             [['iva_id'], 'exist', 'skipOnError' => true, 'targetClass' => Iva::class, 'targetAttribute' => ['iva_id' => 'id']],
             [['marca_id'], 'exist', 'skipOnError' => true, 'targetClass' => Marca::class, 'targetAttribute' => ['marca_id' => 'id']],
-            [['tamanho_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tamanho::class, 'targetAttribute' => ['tamanho_id' => 'id']],
+            ['quantidade', 'default', 'value' => 0, 'on' => self::SCENARIO_CREATE],
         ];
     }
 
@@ -212,12 +214,12 @@ class Produto extends \yii\db\ActiveRecord
 
         if ($insert)
         {
-            $myJSON = "Foi inserido um produto: ".json_encode($myObj->nomeProduto);
+            $myJSON = "Foi inserido um produto: ".$myObj->nomeProduto;
             $this->FazPublishNoMosquitto("INSERT_PRODUTO", $myJSON);
         }
         else
         {
-            $myJSON = "Foi atualizado um produto: ".json_encode($myObj->nomeProduto);
+            $myJSON = "Foi atualizado um produto: ".$myObj->nomeProduto;
             $this->FazPublishNoMosquitto("UPDATE_PRODUTO", $myJSON);
         }
     }
@@ -229,7 +231,7 @@ class Produto extends \yii\db\ActiveRecord
         $prod_id = $this->id;
         $myObj = new \stdClass();
         $myObj->id = $prod_id;
-        $myJSON = "Foi deletado um produto: ".json_encode($myObj->nomeProduto);
+        $myJSON = "Foi apagado um produto.";
 
         $this->FazPublishNoMosquitto("DELETE_PRODUTO", $myJSON);
     }

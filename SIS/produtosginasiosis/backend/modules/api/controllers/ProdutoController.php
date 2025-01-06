@@ -266,7 +266,7 @@ class ProdutoController extends ActiveController
         return ['message' => 'Não foi possivel obter os imagems do produto selecionado.'];
     }
 
-    public function actionDetalhes($id)
+    /*public function actionDetalhes($id)
     {
         $userID = Yii::$app->params['id'];
 
@@ -301,5 +301,5 @@ class ProdutoController extends ActiveController
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível obter os detalhes do produto pretendido.'];
-    }
+    }*/
 }

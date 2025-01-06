@@ -86,6 +86,7 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/avaliacao',
                     'extraPatterns' => [
                         'POST criaravaliacao' => 'criaravaliacao',
+                        'DELETE apagaravaliacao'=> 'apagaravaliacao',
                     ],
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/favorito',

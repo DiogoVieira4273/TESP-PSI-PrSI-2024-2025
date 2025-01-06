@@ -1,6 +1,6 @@
 <?php
 
-namespace mosquitto;
+namespace common\mosquitto;
 
 /*
  	phpMQTT
@@ -36,8 +36,7 @@ namespace mosquitto;
 
 /* phpMQTT */
 
-class phpMQTT
-{
+class phpMQTT {
     protected static $known_commands = [1 => 'CONNECT', 2 => 'CONNACK', 3 => 'PUBLISH', 4 => 'PUBACK', 5 => 'PUBREC', 6 => 'PUBREL', 7 => 'PUBCOMP', 8 => 'SUBSCRIBE', 9 => 'SUBACK', 10 => 'UNSUBSCRIBE', 11 => 'UNSUBACK', 12 => 'PINGREQ', 13 => 'PINGRESP', 14 => 'DISCONNECT'];            /* holds the socket	*/
     public $keepalive = 10;            /* counter for message id */
     public $timesinceping;        /* default keepalive timmer */
