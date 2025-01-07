@@ -3,8 +3,10 @@
 namespace frontend\controllers;
 
 use backend\models\UserForm;
+use common\models\Avaliacao;
 use common\models\Cupaodesconto;
 use common\models\Imagem;
+use common\models\Metodoentrega;
 use common\models\Produto;
 use common\models\Profile;
 use frontend\models\ResendVerificationEmailForm;
@@ -85,8 +87,13 @@ class SiteController extends Controller
             ->select(['codigo', 'dataFim', 'desconto'])
             ->where(['>', 'dataFim', date('Y-m-d')])
             ->all();
+        $avaliacoes = Avaliacao::find()
+            ->orderBy(['id' => SORT_ASC])
+            ->limit(3)
+            ->all();
+        $metodosentrega = Metodoentrega::find()->all();
 
-        return $this->render('index', ['produtosRecentes' => $produtosRecentes, 'cupoes' => $cupoes]);
+        return $this->render('index', ['produtosRecentes' => $produtosRecentes, 'cupoes' => $cupoes, 'avaliacoes', 'avaliacoes' => $avaliacoes, 'metodosentrega' => $metodosentrega]);
     }
 
     /**
