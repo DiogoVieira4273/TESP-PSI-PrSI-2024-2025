@@ -39,13 +39,13 @@ class CompraProdutosCest
         $I->wait(2);
         $I->click('button[data-tamanho-id="1"]');
         $I->wait(2);
-        $I->click('.fa-cart-plus');
+        $I->click('#adicionar-carrinho .fa.fa-cart-plus');
         $I->wait(2);
-        $I->click('a[href="/produtosginasio/frontend/web/carrinhocompra/aumentar?id=13"] .fa-plus');
+        $I->click('#aumentar-quantidade .fa-plus');
         $I->wait(2);
-        $I->click('a[href="/produtosginasio/frontend/web/carrinhocompra/diminuir?id=13"] .fa-minus');
+        $I->click('#diminuir-quantidade .fa-minus');
         $I->wait(2);
-        $I->click('a[href="/produtosginasio/frontend/web/finalizarcompra/index?carrinho_id=13"]');
+        $I->click('#finalizar-compra');
         $I->wait(2);
         $I->selectOption('metodo_entrega', '1');
         $I->click('Aplicar Método de Entrega');
@@ -58,7 +58,7 @@ class CompraProdutosCest
         $I->wait(1);
         $I->click('Confirmar Compra');
         $I->wait(5);
-        $I->click('.fa fa-user');
+        //$I->click('.fa fa-user');
 
     }
 }
