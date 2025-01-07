@@ -8,89 +8,48 @@ use yii\helpers\Url;
 $this->title = 'Produtos de Ginásio';
 ?>
 <div class="slider_section">
-    <div id="customCarousel1" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8 mx-auto">
-                            <div class="detail_box">
-                                <h1>
-                                    Best <br/>
-                                    Fitness <br/>
-                                    Equipments
-                                </h1>
-                                <p>
-                                    Chunks as necessary, making this the first true
-                                    generator on the Internet. It uses a dictionary of over
-                                    200 Latin words, combined with
-                                </p>
-                                <a href="">
-                                    Read More
-                                </a>
+    <?php
+    if ($cupoes) {
+        $first = true;
+        ?>
+        <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <?php foreach ($cupoes as $cupao): ?>
+                    <div class="carousel-item <?= $first ? 'active' : '' ?>">
+                        <!-- Marca o primeiro cupão como 'active' -->
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-8 mx-auto">
+                                    <div class="detail_box">
+                                        <h1>
+                                            Aproveite <br/>
+                                            Desconto - <?= $cupao->desconto ?>%
+                                        </h1>
+                                        <p>
+                                            Código de desconto para aplicar numa compra:
+                                            <b><?= $cupao->codigo ?></b>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <?php $first = false; ?>
+                <?php endforeach; ?>
             </div>
-            <div class="carousel-item ">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8 mx-auto">
-                            <div class="detail_box">
-                                <h1>
-                                    Best <br/>
-                                    Fitness <br/>
-                                    Equipments
-                                </h1>
-                                <p>
-                                    Chunks as necessary, making this the first true
-                                    generator on the Internet. It uses a dictionary of over
-                                    200 Latin words, combined with
-                                </p>
-                                <a href="">
-                                    Read More
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item ">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8 mx-auto">
-                            <div class="detail_box">
-                                <h1>
-                                    Best <br/>
-                                    Fitness <br/>
-                                    Equipments
-                                </h1>
-                                <p>
-                                    Chunks as necessary, making this the first true
-                                    generator on the Internet. It uses a dictionary of over
-                                    200 Latin words, combined with
-                                </p>
-                                <a href="">
-                                    Read More
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="carousel_btn-box">
+                <a class="carousel-control-prev" href="#customCarousel1" role="button" data-slide="prev">
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#customCarousel1" role="button" data-slide="next">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
         </div>
-        <div class="carousel_btn-box">
-            <a class="carousel-control-prev" href="#customCarousel1" role="button" data-slide="prev">
-                <i class="fa fa-angle-left" aria-hidden="true"></i>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#customCarousel1" role="button" data-slide="next">
-                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
-    </div>
+    <?php } ?>
 </div>
 <!-- end slider section -->
 
@@ -162,25 +121,22 @@ $this->title = 'Produtos de Ginásio';
                 <div class="detail-box">
                     <div class="heading_container ">
                         <h2>
-                            About Us
+                            Sobre os Produtos Ginásio
                         </h2>
                     </div>
                     <p>
-                        It is established fact that a reader will be distracted by the
-                        readable content of a page when looking at its layout. The point
-                        of using Lorem Ipsum is that it has a more-or-less normal
-                        distribution of letters, generators on the Internet tend to repeat predefined chunks as
-                        necessary, making this the first true generator on the
-                        Internet.
+                        Este sistema é uma plataforma que permite a venda de produtos de ginásio, como roupa, artigos de
+                        desporto, entre outros...
+                    <hr>
+                    O sistema foi desenvolvido no âmbito do projeto final de curso de TeSP em Programação de Sistemas de
+                    Informação, que abrange as unidades curriculares de Plataformas de Sistemas de Informação, Acesso
+                    Móvel a Sistemas de Informação e Serviços e Interoperabilidade de Sistemas.
                     </p>
-                    <a href="">
-                        Read More
-                    </a>
                 </div>
             </div>
-            <div class="col-md-6 px-0">
-                <div class="img-box">
-                    <img src="images/about-img.jpg" alt=""/>
+            <div class="col-md-6">
+                <div class="img-box" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                    <img src="images/Icon_Projeto.png" alt="Ícone do Projeto" style="width: 40%; height: auto;"/>
                 </div>
             </div>
         </div>
@@ -194,76 +150,24 @@ $this->title = 'Produtos de Ginásio';
     <div class="container">
         <div class="heading_container heading_center">
             <h2>
-                Why Choose Us
+                Porquê escolher-nos?
             </h2>
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-6 mx-auto">
                 <div class="box">
                     <div class="img-box">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512">
-                            <g id="Free_delivery" data-name="Free delivery">
-                                <path
-                                        d="M61,53H60V42a9.01,9.01,0,0,0-9-9H44V22a1,1,0,0,0-1-1H3a1,1,0,0,0-1,1V54a1,1,0,0,0,1,1H4v1a3,3,0,0,0,3,3h4.812a5.986,5.986,0,0,0,10.376,0H45.812a5.986,5.986,0,0,0,10.376,0H59a3,3,0,0,0,3-3V54A1,1,0,0,0,61,53ZM58,42v2H49a1,1,0,0,1-1-1V35h3A7.008,7.008,0,0,1,58,42ZM46,35v8a3,3,0,0,0,3,3h9v7H56.188a5.986,5.986,0,0,0-10.376,0H44V35ZM22.188,53a5.986,5.986,0,0,0-10.376,0H4V49H42v4ZM4,23H42V47H4ZM7,57a1,1,0,0,1-1-1V55h5.09a5.6,5.6,0,0,0,0,2Zm10,3a4,4,0,1,1,4-4A4,4,0,0,1,17,60Zm5.91-3a5.6,5.6,0,0,0,0-2H45.09a5.6,5.6,0,0,0,0,2ZM51,60a4,4,0,1,1,4-4A4,4,0,0,1,51,60Zm9-4a1,1,0,0,1-1,1H56.91a5.6,5.6,0,0,0,0-2H60Z"/>
-                                <path
-                                        d="M10,38a1,1,0,0,0,1-1V34h2a1,1,0,0,0,0-2H11V30h3a1,1,0,0,0,0-2H10a1,1,0,0,0-1,1v8A1,1,0,0,0,10,38Z"/>
-                                <path
-                                        d="M17,38a1,1,0,0,0,1-1V34.667L20.2,37.6a1,1,0,1,0,1.6-1.2l-1.912-2.549A2.992,2.992,0,0,0,19,28H17a1,1,0,0,0-1,1v8A1,1,0,0,0,17,38Zm3-7a1,1,0,0,1-1,1H18V30h1A1,1,0,0,1,20,31Z"/>
-                                <path
-                                        d="M25,38h4a1,1,0,0,0,0-2H26V34h2a1,1,0,0,0,0-2H26V30h3a1,1,0,0,0,0-2H25a1,1,0,0,0-1,1v8A1,1,0,0,0,25,38Z"/>
-                                <path
-                                        d="M32,38h4a1,1,0,0,0,0-2H33V34h2a1,1,0,0,0,0-2H33V30h3a1,1,0,0,0,0-2H32a1,1,0,0,0-1,1v8A1,1,0,0,0,32,38Z"/>
-                                <path d="M39,40H7a1,1,0,0,0,0,2H39a1,1,0,0,0,0-2Z"/>
-                            </g>
-                        </svg>
+                        <i class="fa fa-wallet"></i>
                     </div>
                     <div class="detail-box">
                         <h5>
-                            FREE DELIVERY
+                            Principais Formas de Pagamento
                         </h5>
+                        <hr>
                         <p>
-                            generators on the Internet tend to repeat predefined chunks as
-                            necessary, making this the first true generator on the
-                            Internet.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mx-auto">
-                <div class="box">
-                    <div class="img-box">
-                        <svg id="Layer_3" enable-background="new 0 0 64 64" height="512" viewBox="0 0 64 64"
-                             width="512"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                                <path
-                                        d="m58 39h-13v-4.031c.333.019.667.031 1 .031 9.374 0 17-7.626 17-17s-7.626-17-17-17c-5.84 0-11.254 3.002-14.36 7.898l-3.149-1.77c-.366-.207-.821-.161-1.141.112-.319.273-.434.717-.286 1.11l3 8c.179.476.682.739 1.179.619l8-2c.395-.099.689-.425.747-.827.059-.401-.132-.799-.481-1.005l-2.501-1.473c2.048-2.899 5.41-4.664 8.992-4.664 6.065 0 11 4.935 11 11s-4.935 11-11 11c-.334 0-.668-.018-1-.048v-10.952c0-.552-.447-1-1-1h-28c-.553 0-1 .448-1 1v21h-13c-.553 0-1 .448-1 1v22c0 .552.447 1 1 1h28 28c.553 0 1-.448 1-1v-22c0-.552-.447-1-1-1zm-17 2h3 3v6h-6zm5-10c7.168 0 13-5.832 13-13s-5.832-13-13-13c-4.626 0-8.94 2.49-11.26 6.499-.275.476-.115 1.084.357 1.363l1.291.76-4.766 1.191-1.725-4.599 1.611.906c.232.13.509.162.763.09.256-.072.473-.244.602-.477 2.648-4.77 7.677-7.733 13.127-7.733 8.271 0 15 6.729 15 15s-6.729 15-15 15c-.333 0-.667-.013-1-.035v-2.007c.332.026.666.042 1 .042zm-19-12h6v6h-6zm-10 0h8v7c0 .552.447 1 1 1h8c.553 0 1-.448 1-1v-7h8v20h-13-13zm-4 22h3 3v6h-6zm-10 0h8v7c0 .552.447 1 1 1h8c.553 0 1-.448 1-1v-7h8v20h-26zm54 20h-26v-20h8v7c0 .552.447 1 1 1h8c.553 0 1-.448 1-1v-7h8z"/>
-                                <path
-                                        d="m30 33c0-.552-.447-1-1-1h-10c-.553 0-1 .448-1 1v4c0 .552.447 1 1 1h10c.553 0 1-.448 1-1zm-2 3h-8v-2h8z"/>
-                                <path d="m40 33h2v5h-2z"/>
-                                <path d="m37 33h2v5h-2z"/>
-                                <path d="m34 33h2v5h-2z"/>
-                                <path
-                                        d="m15 54h-10c-.553 0-1 .448-1 1v4c0 .552.447 1 1 1h10c.553 0 1-.448 1-1v-4c0-.552-.447-1-1-1zm-1 4h-8v-2h8z"/>
-                                <path d="m26 55h2v5h-2z"/>
-                                <path d="m23 55h2v5h-2z"/>
-                                <path d="m20 55h2v5h-2z"/>
-                                <path
-                                        d="m43 54h-10c-.553 0-1 .448-1 1v4c0 .552.447 1 1 1h10c.553 0 1-.448 1-1v-4c0-.552-.447-1-1-1zm-1 4h-8v-2h8z"/>
-                                <path d="m54 55h2v5h-2z"/>
-                                <path d="m51 55h2v5h-2z"/>
-                                <path d="m48 55h2v5h-2z"/>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="detail-box">
-                        <h5>
-                            Easy Return
-                        </h5>
-                        <p>
-                            generators on the Internet tend to repeat predefined chunks as
-                            necessary, making this the first true generator on the
-                            Internet.
+                            <i class="fa fa-paypal"></i> Paypal
+                            <br><br>
+                            <i class="fa fa-credit-card"></i> Cartão de Crédito
                         </p>
                     </div>
                 </div>
@@ -354,6 +258,7 @@ $this->title = 'Produtos de Ginásio';
                         <h5>
                             Suporte 24/7
                         </h5>
+                        <hr>
                         <p>
                             Equipa sempre disponível para ajudar!
                         </p>

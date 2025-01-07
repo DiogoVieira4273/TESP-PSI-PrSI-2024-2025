@@ -1,15 +1,15 @@
 <?php
-
 namespace backend\modules\api\controllers;
 
 use backend\modules\api\components\CustomAuth;
 use common\models\User;
+use common\models\Metodoentrega; // Supondo que você tenha um modelo Metodoentrega
 use Yii;
 use yii\rest\ActiveController;
 
-class TamanhoController extends ActiveController
+class MetodoentregaController extends ActiveController
 {
-    public $modelClass = 'common\models\Tamanho';
+    public $modelClass = 'common\models\Metodoentrega';
 
     public function behaviors()
     {
@@ -21,6 +21,7 @@ class TamanhoController extends ActiveController
         return $behaviors;
     }
 
+    // Método para contar o total de métodos de entrega
     public function actionCount()
     {
         $userID = Yii::$app->params['id'];
@@ -31,16 +32,16 @@ class TamanhoController extends ActiveController
                 Yii::$app->response->statusCode = 400;
                 return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
-                $tamanhoModel = new $this->modelClass;
-                $recs = $tamanhoModel::find()->all();
+                $metodoEntregaModel = new $this->modelClass;
+                $recs = $metodoEntregaModel::find()->all();
                 return ['count' => count($recs)];
             }
         }
         Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possivel contar os tamanhos.'];
+        return ['message' => 'Não foi possível contar os métodos de entrega.'];
     }
 
-    public function actionTamanhos()
+    public function actionMetodoentregas()
     {
         $userID = Yii::$app->params['id'];
 
@@ -50,12 +51,13 @@ class TamanhoController extends ActiveController
                 Yii::$app->response->statusCode = 400;
                 return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
-                $tamanhoModel = new $this->modelClass;
-                $recs = $tamanhoModel::find()->all();
-                return ['tamanhos' => $recs];
+                $metodoentregaModel = new $this->modelClass;
+                $recs = $metodoentregaModel::find()->all();
+                return ['metodoentregas' => $recs];
             }
         }
         Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possivel obter os tamanhos.'];
+        return ['message' => 'Não foi possível obter os métodos de entrega.'];
     }
 }
+

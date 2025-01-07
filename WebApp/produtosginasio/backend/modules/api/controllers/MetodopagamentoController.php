@@ -7,9 +7,9 @@ use common\models\User;
 use Yii;
 use yii\rest\ActiveController;
 
-class TamanhoController extends ActiveController
+class MetodopagamentoController extends ActiveController
 {
-    public $modelClass = 'common\models\Tamanho';
+    public $modelClass = 'common\models\Metodopagamento';
 
     public function behaviors()
     {
@@ -21,6 +21,7 @@ class TamanhoController extends ActiveController
         return $behaviors;
     }
 
+    // Método para contar o total de métodos de pagamento
     public function actionCount()
     {
         $userID = Yii::$app->params['id'];
@@ -31,16 +32,16 @@ class TamanhoController extends ActiveController
                 Yii::$app->response->statusCode = 400;
                 return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
-                $tamanhoModel = new $this->modelClass;
-                $recs = $tamanhoModel::find()->all();
+                $metodoPagamentoModel = new $this->modelClass;
+                $recs = $metodoPagamentoModel::find()->all();
                 return ['count' => count($recs)];
             }
         }
         Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possivel contar os tamanhos.'];
+        return ['message' => 'Não foi possível contar os métodos de pagamento.'];
     }
 
-    public function actionTamanhos()
+    public function actionMetodopagamentos()
     {
         $userID = Yii::$app->params['id'];
 
@@ -50,12 +51,12 @@ class TamanhoController extends ActiveController
                 Yii::$app->response->statusCode = 400;
                 return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
-                $tamanhoModel = new $this->modelClass;
-                $recs = $tamanhoModel::find()->all();
-                return ['tamanhos' => $recs];
+                $metodopagamentoModel = new $this->modelClass;
+                $recs = $metodopagamentoModel::find()->all();
+                return ['metodopagamentos' => $recs];
             }
         }
         Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possivel obter os tamanhos.'];
+        return ['message' => 'Não foi possivel obter as marcas.'];
     }
 }

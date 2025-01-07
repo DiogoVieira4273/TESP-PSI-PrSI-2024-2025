@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use backend\models\UserForm;
+use common\models\Cupaodesconto;
 use common\models\Imagem;
 use common\models\Produto;
 use common\models\Profile;
@@ -80,8 +81,12 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $produtosRecentes = Produto::find()->with(['imagens'])->orderBy(['id' => SORT_DESC])->limit(9)->all();
+        $cupoes = Cupaodesconto::find()
+            ->select(['codigo', 'dataFim', 'desconto'])
+            ->where(['>', 'dataFim', date('Y-m-d')])
+            ->all();
 
-        return $this->render('index', ['produtosRecentes' => $produtosRecentes]);
+        return $this->render('index', ['produtosRecentes' => $produtosRecentes, 'cupoes' => $cupoes]);
     }
 
     /**
