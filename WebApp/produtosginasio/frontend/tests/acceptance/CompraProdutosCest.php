@@ -19,8 +19,8 @@ class CompraProdutosCest
     public function _after(AcceptanceTester $I)
     {
         //logout
-        $I->see('Logout (Tuga Francisco)');
-        $I->click('Logout (Tuga Francisco)');
+        /*$I->see('Logout (Tuga Francisco)');
+        $I->click('Logout (Tuga Francisco)');*/
     }
 
     // tests
@@ -52,13 +52,15 @@ class CompraProdutosCest
         $I->wait(1);
         $I->scrollTo('select[name="metodo_pagamento"]');
         $I->selectOption('metodo_pagamento', '1');
-        $I->wait(1);
-        $I->scrollTo('button.btn.btn-primary.mt-2');
-        $I->click('button.btn.btn-primary.mt-2');
-        $I->wait(1);
+        $I->scrollTo('#guardar-dados');
+        $I->wait(2);
+        $I->click('#guardar-dados');
         $I->click('Confirmar Compra');
-        $I->wait(5);
-        //$I->click('.fa fa-user');
+        $I->wait(1);
+        $I->click('i.fa.fa-user');
+        $I->wait(1);
+        $I->click('Minhas Compras');
+        $I->wait(10);
 
     }
 }
