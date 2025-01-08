@@ -19,8 +19,8 @@ class CompraProdutosCest
     public function _after(AcceptanceTester $I)
     {
         //logout
-        /*$I->see('Logout (Tuga Francisco)');
-        $I->click('Logout (Tuga Francisco)');*/
+        $I->see('Logout (Tuga Francisco)');
+        $I->click('Logout (Tuga Francisco)');
     }
 
     // tests
