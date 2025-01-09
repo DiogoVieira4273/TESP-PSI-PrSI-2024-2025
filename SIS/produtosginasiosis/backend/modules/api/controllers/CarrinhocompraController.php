@@ -44,9 +44,11 @@ class CarrinhocompraController extends ActiveController
         // Vai buscar o carrinho associado ao perfil
         $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
         if (!$carrinho) {
-            Yii::$app->response->statusCode = 404;
+            Yii::$app->response->statusCode = 400;
             return ['message' => 'Carrinho não encontrado.'];
         }
+
+        $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
 
         // Estruturar os dados para resposta
         $linhasCarrinho = [];
@@ -54,14 +56,29 @@ class CarrinhocompraController extends ActiveController
             $produto = $linha->produto;
             $tamanho = $linha->tamanho;
 
-            $linhasCarrinho[] = [
-                'produto_nome' => $produto ? $produto->nomeProduto : 'Produto não encontrado',
-                'tamanho_nome' => $tamanho ? $tamanho->referencia : 'Tamanho não encontrado',
+            $linhaDados = [
+                'id' => $linha->id,
                 'quantidade' => $linha->quantidade,
                 'precoUnit' => $linha->precoUnit,
-                'subtotal' => $linha->subtotal,
+                'valorIva' => $linha->valorIva,
                 'valorComIva' => $linha->valorComIva,
+                'subtotal' => $linha->subtotal,
+                'carrinhocompras_id' => $carrinho->id,
+                'produto_nome' => $produto ? $produto->nomeProduto : 'Produto não encontrado',
+                'tamanho_nome' => $tamanho ? $tamanho->referencia : 'N/A',
+                'imagem' => null
             ];
+
+            // Verifica se o produto tem imagens associadas
+            if (!empty($produto->imagens)) {
+                // Vai buscar a primeira imagem
+                $primeiraImagem = $produto->imagens[0];
+
+                // Monta a URL completa da imagem
+                $linhaDados['imagem'] = $baseUrl . $primeiraImagem->filename;
+            }
+
+            $linhasCarrinho[] = $linhaDados;
         }
 
         return [
@@ -71,9 +88,323 @@ class CarrinhocompraController extends ActiveController
         ];
     }
 
+    public function actionAdicionarprodutocarrinho()
+    {
+        $userId = Yii::$app->params['id'];
 
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
 
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
 
+        $request = Yii::$app->request;
+        $produto = $request->getBodyParam('produto');
+
+        $produto = Produto::find()->where(['id' => $produto])->one();
+
+        if ($produto == null) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Produto não encontrado.'];
+        }
+
+        if ($produto->quantidade > 0) {
+            //atualizar a quantidade do Produto
+            $produto->quantidade -= 1;
+            $produto->save();
+
+            $linhaCarrinho = Linhacarrinho::find()->where(['carrinhocompras_id' => $carrinho->id, 'produto_id' => $produto->id])->one();
+
+            if ($linhaCarrinho) {
+                $linhaCarrinho->quantidade += 1;
+            } else {
+                $linhaCarrinho = new Linhacarrinho();
+                $linhaCarrinho->quantidade = 1;
+                $linhaCarrinho->carrinhocompras_id = $carrinho->id;
+                $linhaCarrinho->produto_id = $produto->id;
+            }
+
+            $linhaCarrinho->precoUnit = $produto->preco;
+            $linhaCarrinho->valorIva = $produto->iva->percentagem;
+
+            $percentualIva = $produto->iva->percentagem * 100;
+            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+            $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
+            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+
+            $linhaCarrinho->save();
+
+            $carrinho->quantidade += 1;
+            $carrinho->valorTotal += $linhaCarrinho->subtotal;
+
+            return [
+                'linhaCarrinho' => $linhaCarrinho,
+            ];
+        } else {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Stock insuficiente.'];
+        }
+
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel adicionar o produto ao carrinho.'];
+    }
+
+    public function actionAumentarquantidade()
+    {
+        $request = Yii::$app->request;
+        $linha = $request->getBodyParam('linhaCarrinho');
+
+        //encontrar a linha do carrinho
+        $linhaCarrinho = Linhacarrinho::findOne($linha);
+
+        if (!$linhaCarrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Produto não encontrado no carrinho.'];
+        }
+
+        //verifica se o produto tem tamanho associado
+        $temTamanho = ProdutosHasTamanho::find()
+            ->where(['produto_id' => $linhaCarrinho->produto_id])
+            ->andWhere(['tamanho_id' => $linhaCarrinho->tamanho_id])
+            ->exists();
+
+        if ($temTamanho) {
+            //produtos com tamanho associado
+            $produtostamanho = ProdutosHasTamanho::findOne([
+                'produto_id' => $linhaCarrinho->produto_id,
+                'tamanho_id' => $linhaCarrinho->tamanho_id,
+            ]);
+
+            if ($produtostamanho && $produtostamanho->quantidade > 0) {
+                $produtostamanho->quantidade -= 1;
+
+                //atualiza a quantidade total na tabela Produtos
+                $produto = Produto::findOne($linhaCarrinho->produto_id);
+                $produto->quantidade -= 1;
+
+                $produtostamanho->save();
+                $produto->save();
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Stock insuficiente para aumentar a quantidade.'];
+            }
+        } else {
+            //produtos sem tamanho associado
+            $produto = Produto::findOne($linhaCarrinho->produto_id);
+
+            if ($produto->quantidade > 0) {
+                $produto->quantidade -= 1;
+                $produto->save();
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Stock insuficiente para aumentar a quantidade.'];
+            }
+        }
+
+        //aumentar quantidade do produto no carrinho
+        $linhaCarrinho->quantidade += 1;
+
+        $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+        $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+        $valorIvaAplicado = $subtotalSemIva * $percentualIva / 100;
+        $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+        $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+        $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+
+        if ($linhaCarrinho->save()) {
+            $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+
+            return [
+                'status' => 'success',
+                'message' => 'Quantidade aumentada com sucesso.',
+            ];
+        } else {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao atualizar a linha do carrinho.'];
+        }
+    }
+
+    public function actionDiminuirquantidade()
+    {
+        $request = Yii::$app->request;
+        $linha = $request->getBodyParam('linhaCarrinho');
+
+        $linhaCarrinho = Linhacarrinho::findOne($linha);
+
+        if (!$linhaCarrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Produto não encontrado no carrinho.'];
+        }
+
+        //verificar se a quantidade é maior que 1
+        if ($linhaCarrinho->quantidade <= 1) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'A quantidade não pode ser menor que 1.'];
+        }
+
+        //verifica se o produto tem tamanho associado
+        $temTamanho = ProdutosHasTamanho::find()
+            ->where(['produto_id' => $linhaCarrinho->produto_id])
+            ->andWhere(['tamanho_id' => $linhaCarrinho->tamanho_id])
+            ->exists();
+
+        if ($temTamanho) {
+            //produtos com tamanho associado
+            $produtostamanho = ProdutosHasTamanho::findOne([
+                'produto_id' => $linhaCarrinho->produto_id,
+                'tamanho_id' => $linhaCarrinho->tamanho_id,
+            ]);
+
+            if ($produtostamanho) {
+                $produtostamanho->quantidade += 1;
+
+                //atualiza a quantidade total na tabela Produtos
+                $produto = Produto::findOne($linhaCarrinho->produto_id);
+                $produto->quantidade += 1;
+
+                if ($produtostamanho->save() && $produto->save()) {
+                    // Continuação do cálculo do carrinho
+                } else {
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Erro ao atualizar o stock.'];
+                }
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Tamanho não encontrado no stock para este produto.'];
+            }
+        } else {
+            //produtos sem tamanho associado
+            $produto = Produto::findOne($linhaCarrinho->produto_id);
+
+            if ($produto) {
+                $produto->quantidade += 1;
+
+                if (!$produto->save()) {
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Erro ao atualizar o stock do produto.'];
+                }
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Produto não encontrado no stock.'];
+            }
+        }
+
+        //diminuir a quantidade do produto no carrinho
+        $linhaCarrinho->quantidade -= 1;
+
+        $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+        $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+        $valorIvaAplicado = $subtotalSemIva * $percentualIva / 100;
+        $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+        $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+        $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+
+        if ($linhaCarrinho->save()) {
+            $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+
+            return [
+                'status' => 'success',
+                'message' => 'Quantidade diminuída com sucesso.',
+            ];
+        } else {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao atualizar a linha do carrinho.'];
+        }
+    }
+
+    public function actionApagarprodutocarrinho()
+    {
+        $userId = Yii::$app->params['id'];
+
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
+
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
+
+        $request = Yii::$app->request;
+        $linha = $request->getBodyParam('linhaCarrinho');
+
+        $linhaCarrinho = Linhacarrinho::find()->where(['id' => $linha, 'carrinhocompras_id' => $carrinho->id])->one();
+        if ($linhaCarrinho == null) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Não foi possivel obter a linha do carrinho.'];
+        }
+
+        //verifica se o produto tem tamanho associado
+        $temTamanho = ProdutosHasTamanho::find()
+            ->where(['produto_id' => $linhaCarrinho->produto_id])
+            ->andWhere(['tamanho_id' => $linhaCarrinho->tamanho_id])
+            ->exists();
+
+        if ($temTamanho) {
+            //produtos com tamanho associado
+            $produtostamanho = ProdutosHasTamanho::findOne([
+                'produto_id' => $linhaCarrinho->produto_id,
+                'tamanho_id' => $linhaCarrinho->tamanho_id,
+            ]);
+
+            if ($produtostamanho) {
+                $produtostamanho->quantidade += $linhaCarrinho->quantidade;
+
+                //atualiza a quantidade total na tabela Produtos
+                $produto = Produto::findOne($linhaCarrinho->produto_id);
+                $produto->quantidade += $linhaCarrinho->quantidade;
+
+                $produtostamanho->save();
+                $produto->save();
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Tamanho não encontrado no stock para este produto.'];
+            }
+        } else {
+            //produtos sem tamanho associado
+            $produto = Produto::findOne($linhaCarrinho->produto_id);
+
+            if ($produto) {
+                $produto->quantidade += $linhaCarrinho->quantidade;
+
+                if (!$produto->save()) {
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Erro ao atualizar o stock do produto.'];
+                }
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Produto não encontrado no stock.'];
+            }
+        }
+
+        if ($linhaCarrinho->delete()) {
+            $this->updateCarrinhoTotal($carrinho->id);
+
+            return [
+                'status' => 'success',
+                'message' => 'Produto removido com sucesso!',
+            ];
+        } else {
+            Yii::$app->response->statusCode = 500;
+            return ['message' => 'Erro ao remover o produto do carrinho.'];
+        }
+    }
+
+    //-------------------------------------------------SIS------------------------------------------------------------------------------
 
     public function actionAdicionarcarrinho($produto_id, $tamanho_id)
     {
