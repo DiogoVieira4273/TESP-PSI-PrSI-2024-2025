@@ -5,8 +5,8 @@
 
 --
 -- Banco de dados: `produtosginasio`
-CREATE DATABASE produtosginasio;
-USE produtosginasio;
+CREATE DATABASE produtosginasiomeu;
+USE produtosginasiomeu;
 --
 
 -- --------------------------------------------------------
@@ -769,7 +769,7 @@ CREATE TABLE IF NOT EXISTS `usocupoes` (
   PRIMARY KEY (`id`),
   KEY `fk_usocupoes_cupoesdescontos1_idx` (`cupaodesconto_id`),
   KEY `fk_usocupoes_profiles1_idx` (`profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Restrições para despejos de tabelas
