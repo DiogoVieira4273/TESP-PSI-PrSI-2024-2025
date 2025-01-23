@@ -4,10 +4,17 @@ namespace backend\modules\api\controllers;
 
 use backend\modules\api\components\CustomAuth;
 use common\models\Carrinhocompra;
+use common\models\Cupaodesconto;
+use common\models\Encomenda;
+use common\models\Fatura;
 use common\models\Linhacarrinho;
+use common\models\Linhafatura;
+use common\models\Metodoentrega;
 use common\models\Produto;
 use common\models\ProdutosHasTamanho;
 use common\models\Profile;
+use common\models\Usocupao;
+use Mpdf\Mpdf;
 use Yii;
 use yii\filters\auth\QueryParamAuth;
 use yii\rest\ActiveController;
@@ -82,9 +89,32 @@ class CarrinhocompraController extends ActiveController
         }
 
         return [
+            'linhasCarrinho' => $linhasCarrinho,
+        ];
+    }
+
+    public function actionDetalhescarrinho()
+    {
+        // Vai obter o ID do user autenticado
+        $userId = Yii::$app->params['id'];
+
+        // Vai buscar o perfil associado ao usuário
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
+
+        // Vai buscar o carrinho associado ao perfil
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
+
+        return [
             'quantidade_total' => $carrinho->quantidade,
             'valorTotal' => $carrinho->valorTotal,
-            'linhasCarrinho' => $linhasCarrinho,
         ];
     }
 
@@ -133,18 +163,17 @@ class CarrinhocompraController extends ActiveController
             $linhaCarrinho->precoUnit = $produto->preco;
             $linhaCarrinho->valorIva = $produto->iva->percentagem;
 
-            $percentualIva = $produto->iva->percentagem * 100;
+            $percentualIva = $produto->iva->percentagem;
             $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
             $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
-            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
+            $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
 
-            $linhaCarrinho->save();
-
-            $carrinho->quantidade += 1;
-            $carrinho->valorTotal += $linhaCarrinho->subtotal;
+            if ($linhaCarrinho->save()) {
+                $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+            }
 
             return [
                 'linhaCarrinho' => $linhaCarrinho,
@@ -215,11 +244,11 @@ class CarrinhocompraController extends ActiveController
 
         $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
         $percentualIva = $linhaCarrinho->produto->iva->percentagem;
-        $valorIvaAplicado = $subtotalSemIva * $percentualIva / 100;
+        $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
         $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-        $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-        $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+        $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+        $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
         if ($linhaCarrinho->save()) {
             $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
@@ -304,11 +333,11 @@ class CarrinhocompraController extends ActiveController
 
         $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
         $percentualIva = $linhaCarrinho->produto->iva->percentagem;
-        $valorIvaAplicado = $subtotalSemIva * $percentualIva / 100;
+        $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
         $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-        $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-        $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+        $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+        $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
         if ($linhaCarrinho->save()) {
             $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
@@ -404,6 +433,280 @@ class CarrinhocompraController extends ActiveController
         }
     }
 
+    public function actionAplicarcupao()
+    {
+        $request = Yii::$app->request;
+        $userId = Yii::$app->params['id'];
+        $profile = Profile::findOne(['user_id' => $userId]);
+        $codigo = $request->getBodyParam('cupao');
+
+        // Buscar o cupão na base de dados
+        $cupao = Cupaodesconto::findOne(['codigo' => $codigo]);
+
+        // Verifica se o cupão é válido e não expirou
+        if ($cupao && strtotime($cupao->dataFim) >= time()) {
+            if (Usocupao::find()->where(['cupaodesconto_id' => $cupao->id, 'profile_id' => $profile->id])->exists()) {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Cupão já foi utilizado.'];
+            } else {
+
+                return ['codigoCupao' => $cupao->codigo];
+            }
+        } else {
+            // Se o cupão for inválido, exibe mensagem de erro
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Cupão inválido.'];
+        }
+
+        Yii::$app->response->statusCode = 500;
+        return ['message' => 'Não foi possivel aplicar o cupão.'];
+    }
+
+    public function actionDetalhesfinalizarcompra()
+    {
+        $userId = Yii::$app->params['id'];
+
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
+
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
+
+        $subTotal = $carrinho->valorTotal;
+        $custoEnvio = 0;
+        $desconto = 0;
+        $valorPoupado = 0;
+
+        $request = Yii::$app->request;
+
+        $cupao = $request->getBodyParam('codigo');
+        if (!empty($cupao)) {
+            $cupao = Cupaodesconto::find()->where(['codigo' => $cupao])->one();
+
+            if ($cupao && strtotime($cupao->dataFim) >= time()) {
+                $valorPoupado = (($cupao->desconto / 100) * $subTotal);
+                $desconto = $cupao->desconto;
+            }
+        }
+
+        $metodoEntregaId = $request->getBodyParam('metodo_entrega');
+        if ($metodoEntregaId != null) {
+            $metodoEntrega = Metodoentrega::findOne($metodoEntregaId);
+            if ($metodoEntrega) {
+                $custoEnvio = $metodoEntrega->preco;
+            }
+        }
+
+        $valorTotal = ($subTotal - $valorPoupado) + $custoEnvio;
+
+        return [
+            'subtotal' => number_format($subTotal, 2, ',', '.'),
+            'desconto' => number_format($desconto * 100, 0, ',', '.'),
+            'custoEnvio' => number_format($custoEnvio, 2, ',', '.'),
+            'valorPoupado' => number_format($valorPoupado, 2, ',', '.'),
+            'valorTotal' => number_format($valorTotal, 2, ',', '.')
+        ];
+    }
+
+    public function actionConcluircompra()
+    {
+        $userId = Yii::$app->params['id'];
+
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
+
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
+
+        $produtosCarrinho = Linhacarrinho::find()->where([
+            'carrinhocompras_id' => $carrinho->id,  // ID do carrinho
+        ])->all();
+
+        $request = Yii::$app->request;
+
+        $metodoPagamentoId = $request->getBodyParam('metodo_pagamento');
+        $metodoEntregaId = $request->getBodyParam('metodo_entrega');
+        $cupaoCodigo = $request->getBodyParam('codigo_cupao');
+        $email = $request->getBodyParam('email');
+        $nif = $request->getBodyParam('nif');
+        $morada = Yii::$app->request->post('morada');
+        $telefone = Yii::$app->request->post('telefone');
+
+        // Verifica se os campos obrigatórios estão presentes
+        if (empty($metodoPagamentoId) || empty($metodoEntregaId) || empty($email) || empty($morada) || empty($telefone)) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Todos os campos devem ser preenchidos.'];
+        }
+        // Cria a encomenda
+        $encomenda = new Encomenda();
+        $encomenda->data = date('Y-m-d');
+        $encomenda->hora = date('H:i:s');
+        $encomenda->morada = $morada;
+        $encomenda->telefone = $telefone;
+        $encomenda->email = $email;
+        $encomenda->estadoEncomenda = "Em processamento";
+        $encomenda->profile_id = $profile->id;
+        if (!$encomenda->save()) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao criar a encomenda.'];
+        }
+
+        // Cria a base da fatura
+        $fatura = new Fatura();
+        $fatura->dataEmissao = date('Y-m-d');
+        $fatura->horaEmissao = date('H:i:s');
+        $fatura->valorTotal = 0.00;
+        $fatura->ivaTotal = 0.00;
+        if ($nif != null) {
+            $fatura->nif = $nif;
+        }
+        $fatura->metodopagamento_id = $metodoPagamentoId;
+        $fatura->metodoentrega_id = $metodoEntregaId;
+        $fatura->encomenda_id = $encomenda->id;
+        $fatura->profile_id = $profile->id;
+
+        // Se a fatura for salva com sucesso
+        if ($fatura->save()) {
+            // Percorre todos os produtos associados ao carrinho, obtidos pela relação Linhacarrinho
+            foreach ($produtosCarrinho as $linhaCarrinho) {
+                $produto = $linhaCarrinho->produto; // Aqui, você acessa o produto através da relação 'produto' definida no modelo Linhacarrinho
+
+                // Cria a linha da fatura
+                $linhaFatura = new LinhaFatura();
+                $linhaFatura->dataVenda = date('Y-m-d');
+                if ($linhaCarrinho->tamanho != null) {
+                    // Se o produto tiver tamanho, adiciona o tamanho ao nome
+                    $linhaFatura->nomeProduto = $produto->nomeProduto . " - " . ($linhaCarrinho->tamanho ? $linhaCarrinho->tamanho->referencia : 'Sem tamanho');
+                } else {
+                    // Caso contrário, usa apenas o nome do produto
+                    $linhaFatura->nomeProduto = $produto->nomeProduto;
+                }
+
+                $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+                $percentualIva = $produto->iva->percentagem * 100;
+                $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
+                $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+                $linhaFatura->quantidade = $linhaCarrinho->quantidade;
+                $linhaFatura->precoUnit = $produto->preco;
+                $linhaFatura->valorIva = $percentualIva;
+                $linhaFatura->valorComIva = number_format($subtotalComIva, 2);
+                $linhaFatura->subtotal = number_format($subtotalComIva, 2);
+                $linhaFatura->fatura_id = $fatura->id;
+                $linhaFatura->produto_id = $produto->id;
+
+                if ($linhaFatura->save()) {
+                    $fatura->valorTotal += number_format($subtotalComIva, 2); // Adiciona o subtotal com IVA ao total da fatura
+                    $fatura->ivaTotal += number_format($valorIvaAplicado, 2); // Acumula o valor do IVA total
+                }
+
+            }
+
+            // Calcula o custo da entrega
+            $metodoentrega = Metodoentrega::findOne($metodoEntregaId);
+            if ($metodoentrega) {
+                // Adiciona o custo do método de entrega ao valor total
+                $fatura->valorTotal += number_format($metodoentrega->preco, 2);
+
+            }
+
+            // Se o cupão for atualizado
+            if (!empty($cupaoCodigo)) {
+                $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
+
+                if ($cupao) {
+                    // Calcular o valor do desconto como percentagem do subtotal com IVA
+                    $ValorPoupado = ($fatura->valorTotal * $cupao->desconto) / 100;
+
+                    // Aplica o desconto no valor total, mas sem considerar o custo de envio
+                    $fatura->valorTotal -= $ValorPoupado;
+                }
+
+                // Registra o uso do cupão
+                $Usocupao = new UsoCupao();
+                $Usocupao->cupaodesconto_id = $cupao->id;
+                $Usocupao->profile_id = $profile->id;
+                $Usocupao->dataUso = date('Y-m-d');
+                $Usocupao->save();
+            }
+            $fatura->save();
+
+
+            $this->actionGeneratePdf($fatura->id, $cupao ?? null, $ValorPoupado ?? 0.00);
+        }
+
+        //Apaga as linhas carrinho do cliente auntenticado
+        Linhacarrinho::deleteAll([
+            'carrinhocompras_id' => $carrinho->id,  // ID do carrinho
+        ]);
+
+        $this->updateCarrinhoTotal($carrinho->id);
+
+        return 'Compra efetuada com sucesso!';
+
+    }
+
+    public function actionGeneratePdf($faturaID, $Cupao, $ValorPoupado)
+    {
+        //procurar a fatura na base dados
+        $fatura = Fatura::find()->where(['id' => $faturaID])->one();
+
+        if ($fatura === null) {
+            Yii::$app->response->statusCode = 500;
+            return ['message' => 'Fatura não encontrada.'];
+        }
+
+        $subtotalDesconto = $fatura->valorTotal + $ValorPoupado;
+
+        //armazenar os dados da fatura
+        $data = [
+            'fatura' => $fatura,
+            'items' => $fatura->linhasfaturas,
+            'Cupao' => $Cupao,
+            'ValorPoupado' => $ValorPoupado,
+            'subtotalDesconto' => $subtotalDesconto,
+        ];
+
+        //gerar o conteúdo da fatura (HTML)
+        $content = $this->renderPartial('@backend/views/fatura/pdf', $data);
+
+        //criar o PDF
+        $pdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+        ]);
+
+        //escrever o conteúdo da fatura no PDF
+        $pdf->WriteHTML($content);
+
+        //pasta faturas
+        $diretorioFaturas = Yii::getAlias('@common/faturas/');
+        $nomeFicheiro = 'fatura_' . $fatura->id . '.pdf';
+
+        //verificar se a pasta existe, caso contrário criar a pasta
+        if (!is_dir($diretorioFaturas)) {
+            if (!mkdir($diretorioFaturas, 0777, true) && !is_dir($diretorioFaturas)) {
+                Yii::$app->response->statusCode = 500;
+                return ['message' => 'Falha ao criar a pasta de uploads.'];
+            }
+        }
+
+        //guardar o PDF
+        $pdf->Output($diretorioFaturas . $nomeFicheiro, 'F');
+    }
+
     //-------------------------------------------------SIS------------------------------------------------------------------------------
 
     public function actionAdicionarcarrinho($produto_id, $tamanho_id)
@@ -496,9 +799,9 @@ class CarrinhocompraController extends ActiveController
         $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
         $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-        $linhaCarrinho->valorIva = round($valorIvaAplicado, 2);
-        $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
-        $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+        $linhaCarrinho->valorIva = number_format($valorIvaAplicado, 2);
+        $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
+        $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
 
         if (!$linhaCarrinho->save()) {
             Yii::$app->response->statusCode = 400;
@@ -595,8 +898,8 @@ class CarrinhocompraController extends ActiveController
             $valorIvaAplicado = $subtotalSemIva * $percentualIva;
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+            $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
             if ($linhaCarrinho->save()) {
                 $produtostamanho->quantidade += 1;
@@ -643,8 +946,8 @@ class CarrinhocompraController extends ActiveController
             $valorIvaAplicado = $subtotalSemIva * $percentualIva;
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+            $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
             if ($linhaCarrinho->save()) {
                 $produtostamanho->quantidade -= 1;
