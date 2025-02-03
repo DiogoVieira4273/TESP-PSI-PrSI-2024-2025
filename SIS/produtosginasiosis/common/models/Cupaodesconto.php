@@ -71,17 +71,14 @@ class Cupaodesconto extends \yii\db\ActiveRecord
         $dataFim = $this->dataFim;
 
         $myObj = new \stdClass();
-        $myObj->codigo=$codigo;
+        $myObj->codigo = $codigo;
         $myObj->desconto = $desconto;
         $myObj->dataFim = $dataFim;
 
-        if ($insert)
-        {
+        if ($insert) {
             $myJSON = "Existe um novo cupão";
             $this->FazPublishNoMosquitto("INSERT_CUPAODESCONTO", $myJSON);
-        }
-        else
-        {
+        } else {
             $myJSON = "Existe um cupão atualizado";
             $this->FazPublishNoMosquitto("UPDATE_CUPAODESCONTO", $myJSON);
         }
@@ -109,13 +106,10 @@ class Cupaodesconto extends \yii\db\ActiveRecord
         $password = "";
         $cliente_id = "phpMQTT-publisher";
         $mqtt = new phpMQTT($server, $port, $cliente_id);
-        if ($mqtt->connect(true, NULL, $username, $password))
-        {
+        if ($mqtt->connect(true, NULL, $username, $password)) {
             $mqtt->publish($canal, $msg, 0);
             $mqtt->close();
-        }
-        else
-        {
+        } else {
             file_put_contents("debug.output", "Time out");
         }
     }
